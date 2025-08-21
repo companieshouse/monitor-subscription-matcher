@@ -14,6 +14,7 @@ import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
 public class ArrayNodeDeserialiser<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
+
     private final ObjectMapper mapper;
     private final Class<T> type;
 

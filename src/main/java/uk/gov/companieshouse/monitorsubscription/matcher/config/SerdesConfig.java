@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.config;
 
+import static uk.gov.companieshouse.monitorsubscription.matcher.Application.NAMESPACE;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -10,10 +12,14 @@ import uk.gov.companieshouse.api.filinghistory.Annotation;
 import uk.gov.companieshouse.api.filinghistory.AssociatedFiling;
 import uk.gov.companieshouse.api.filinghistory.CapitalDescriptionValue;
 import uk.gov.companieshouse.api.filinghistory.Resolution;
+import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.serdes.ArrayNodeDeserialiser;
 
 @Configuration
 public class SerdesConfig {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
     @Bean
     public ObjectMapper objectMapper() {

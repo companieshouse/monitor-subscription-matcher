@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.serdes;
 
+import static uk.gov.companieshouse.monitorsubscription.matcher.Application.NAMESPACE;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.avro.io.DatumWriter;
@@ -8,10 +10,14 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.reflect.ReflectDatumWriter;
 import org.apache.kafka.common.serialization.Serializer;
 import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 
 public class ChsDeltaSerialiser implements Serializer<ChsDelta> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
+    
     @Override
     public byte[] serialize(String topic, ChsDelta data) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

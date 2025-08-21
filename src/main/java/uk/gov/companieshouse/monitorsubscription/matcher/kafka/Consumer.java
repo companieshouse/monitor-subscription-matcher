@@ -1,13 +1,19 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.kafka;
 
+import static uk.gov.companieshouse.monitorsubscription.matcher.Application.NAMESPACE;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
 
 @Component
 public class Consumer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
     private final Router router;
     private final MessageFlags messageFlags;
