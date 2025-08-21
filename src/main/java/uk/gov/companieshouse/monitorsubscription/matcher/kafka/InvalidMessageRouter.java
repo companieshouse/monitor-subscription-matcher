@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.kafka;
 
+import static java.lang.String.format;
 import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_MESSAGE;
 import static org.springframework.kafka.support.KafkaHeaders.ORIGINAL_OFFSET;
 import static org.springframework.kafka.support.KafkaHeaders.ORIGINAL_PARTITION;
@@ -24,19 +25,22 @@ public class InvalidMessageRouter implements ProducerInterceptor<String, Object>
     private String invalidTopic;
 
     @Override
-    public ProducerRecord<String, Object> onSend(ProducerRecord<String, Object> producerRecord) {
+    public ProducerRecord<String, Object> onSend(final ProducerRecord<String, Object> record) {
+        LOGGER.trace(format("onSend(record=%s) method called.", record));
+
         if (messageFlags.isRetryable()) {
             messageFlags.destroy();
-            return producerRecord;
+            return record;
+
         } else {
 
-            String originalTopic = Optional.ofNullable(producerRecord.headers().lastHeader(ORIGINAL_TOPIC))
-                    .map(h -> new String(h.value())).orElse(producerRecord.topic());
-            BigInteger partition = Optional.ofNullable(producerRecord.headers().lastHeader(ORIGINAL_PARTITION))
+            String originalTopic = Optional.ofNullable(record.headers().lastHeader(ORIGINAL_TOPIC))
+                    .map(h -> new String(h.value())).orElse(record.topic());
+            BigInteger partition = Optional.ofNullable(record.headers().lastHeader(ORIGINAL_PARTITION))
                     .map(h -> new BigInteger(h.value())).orElse(BigInteger.valueOf(-1));
-            BigInteger offset = Optional.ofNullable(producerRecord.headers().lastHeader(ORIGINAL_OFFSET))
+            BigInteger offset = Optional.ofNullable(record.headers().lastHeader(ORIGINAL_OFFSET))
                     .map(h -> new BigInteger(h.value())).orElse(BigInteger.valueOf(-1));
-            String exception = Optional.ofNullable(producerRecord.headers().lastHeader(EXCEPTION_MESSAGE))
+            String exception = Optional.ofNullable(record.headers().lastHeader(EXCEPTION_MESSAGE))
                     .map(h -> new String(h.value())).orElse("unknown");
 
             LOGGER.error("""
@@ -45,22 +49,24 @@ public class InvalidMessageRouter implements ProducerInterceptor<String, Object>
                     """.formatted(invalidTopic, originalTopic, partition, offset, exception),
                     DataMapHolder.getLogMap());
 
-            return new ProducerRecord<>(invalidTopic, producerRecord.key(), producerRecord.value());
+            return new ProducerRecord<>(invalidTopic, record.key(), record.value());
         }
     }
 
     @Override
-    public void onAcknowledgement(RecordMetadata metadata, Exception exception) {
-        //
+    public void onAcknowledgement(final RecordMetadata metadata, final Exception exception) {
+        LOGGER.trace(format("onAcknowledgement(metadata=%s, exception=%s) method called.", metadata, exception));
     }
 
     @Override
     public void close() {
-        //
+        LOGGER.trace("close() method called.");
     }
 
     @Override
-    public void configure(Map<String, ?> configs) {
+    public void configure(final Map<String, ?> configs) {
+        LOGGER.trace(format("configure(configs=%s) method called.", configs));
+
         this.messageFlags = (MessageFlags) configs.get("message-flags");
         this.invalidTopic = (String) configs.get("invalid-topic");
     }

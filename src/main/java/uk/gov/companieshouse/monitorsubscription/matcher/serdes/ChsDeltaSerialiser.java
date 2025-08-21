@@ -17,7 +17,7 @@ import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableE
 public class ChsDeltaSerialiser implements Serializer<ChsDelta> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
-    
+
     @Override
     public byte[] serialize(String topic, ChsDelta data) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

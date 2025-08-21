@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.kafka;
 
+import static java.lang.String.format;
 import static uk.gov.companieshouse.monitorsubscription.matcher.Application.NAMESPACE;
 
 import org.springframework.kafka.annotation.KafkaListener;
@@ -9,6 +10,7 @@ import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
+import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
 
 @Component
 public class Consumer {
@@ -30,10 +32,14 @@ public class Consumer {
             groupId = "${consumer.group-id}"
     )
     public void consume(final Message<ChsDelta> message) {
+        LOGGER.trace(format("consume(message=%s) method called.", message));
         try {
             router.route(message.getPayload());
 
         } catch (RetryableException ex) {
+            LOGGER.error("Retryable exception encountered while processing message. Will retry.",
+                    ex, DataMapHolder.getLogMap()
+            );
             messageFlags.setRetryable(true);
             throw ex;
         }
