@@ -1,8 +1,11 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.service;
 
+import static uk.gov.companieshouse.monitorsubscription.matcher.Application.NAMESPACE;
+
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.kafka.Router;
 
 /**
@@ -12,15 +15,11 @@ import uk.gov.companieshouse.monitorsubscription.matcher.kafka.Router;
 @Service
 public class DefaultMessageService implements Router {
 
-    private final Logger logger;
-
-    public DefaultMessageService(Logger logger) {
-        this.logger = logger;
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
     @Override
     public void route(final ChsDelta delta) {
-        logger.debug(String.format("route(delta=%s) method called.", delta));
+        LOGGER.debug(String.format("route(delta=%s) method called.", delta));
 
         // Message processing goes here.
     }

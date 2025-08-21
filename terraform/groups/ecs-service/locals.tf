@@ -8,7 +8,7 @@ locals {
   container_port             = "8080"
   docker_repo                = "monitor-subscription-matcher"
   kms_alias                  = "alias/${var.aws_profile}/environment-services-kms"
-  healthcheck_path           = "/monitor-subscription-matcher/healthcheck" # healthcheck path for chs-monitor-subscription-matcher
+  healthcheck_path           = "/monitor-subscription-matcher/healthcheck" # healthcheck path for monitor-subscription-matcher
   healthcheck_matcher        = "200"
   vpc_name                   = local.stack_secrets["vpc_name"]
   s3_config_bucket           = data.vault_generic_secret.shared_s3.data["config_bucket_name"]
