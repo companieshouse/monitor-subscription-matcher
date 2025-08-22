@@ -1,2 +1,4 @@
 # monitor-subscription-matcher
-Consumer to match users who want to be notified of changes to a company
+
+Part of Monitor/Follow system. Identifies which users want to be notified of filings taken place for a particular
+company.
