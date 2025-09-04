@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.serdes;
 
-import static uk.gov.companieshouse.monitorsubscription.matcher.Application.NAMESPACE;
+import static uk.gov.companieshouse.monitorsubscription.matcher.config.ApplicationConfig.NAMESPACE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
