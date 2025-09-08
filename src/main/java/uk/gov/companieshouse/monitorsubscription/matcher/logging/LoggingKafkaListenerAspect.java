@@ -16,14 +16,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingMessage;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
 
-@Component
-@Aspect
+//@Component
+//@Aspect
 class LoggingKafkaListenerAspect {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
@@ -40,8 +40,9 @@ class LoggingKafkaListenerAspect {
         this.maxAttempts = maxAttempts;
     }
 
-    @Around("@annotation(org.springframework.kafka.annotation.KafkaListener)")
-    public Object manageStructuredLogging(ProceedingJoinPoint joinPoint) throws Throwable {
+    //@Around("@annotation(org.springframework.kafka.annotation.KafkaListener)")
+    public Object manageStructuredLogging(final ProceedingJoinPoint joinPoint) throws Throwable {
+        LOGGER.debug("manageStructuredLogging() method called");
 
         int retryCount = 0;
         try {
@@ -51,25 +52,29 @@ class LoggingKafkaListenerAspect {
             retryCount = Optional.ofNullable(headers.get(DEFAULT_HEADER_ATTEMPTS))
                     .map(attempts -> ByteBuffer.wrap((byte[]) attempts).getInt())
                     .orElse(1) - 1;
-            ChsDelta chsDelta = extractChsDelta(message.getPayload());
-            DataMapHolder.initialise(Optional.ofNullable(chsDelta.getContextId())
-                    .orElse(UUID.randomUUID().toString()));
+
+            MonitorFilingMessage monitorFilingMessage = extractTopicMessage(message.getPayload());
+
+            // TODO: Get the contextId from the MonitorFilingMessage when available
+            String contextId = UUID.randomUUID().toString();
+            DataMapHolder.initialise(Optional.ofNullable(contextId).orElse(UUID.randomUUID().toString()));
 
             DataMapHolder.get()
                     .retryCount(retryCount)
                     .topic((String) headers.get(RECEIVED_TOPIC))
                     .partition((Integer) headers.get(RECEIVED_PARTITION))
                     .offset((Long) headers.get(OFFSET));
-
+            /*
             LOGGER.info(chsDelta.getIsDelete() ? LOG_MESSAGE_DELETE_RECEIVED : LOG_MESSAGE_RECEIVED,
                     DataMapHolder.getLogMap());
-
+            */
             Object result = joinPoint.proceed();
-
+            /*
             LOGGER.info(chsDelta.getIsDelete() ? LOG_MESSAGE_DELETE_PROCESSED : LOG_MESSAGE_PROCESSED,
                     DataMapHolder.getLogMap());
-
+            */
             return result;
+
         } catch (RetryableException ex) {
             // maxAttempts includes first attempt which is not a retry
             if (retryCount >= maxAttempts - 1) {
@@ -78,18 +83,21 @@ class LoggingKafkaListenerAspect {
                 LOGGER.info(EXCEPTION_MESSAGE.formatted(ex.getClass().getSimpleName()), DataMapHolder.getLogMap());
             }
             throw ex;
+
         } catch (Exception ex) {
             LOGGER.error("Exception thrown", ex, DataMapHolder.getLogMap());
             throw ex;
+
         } finally {
             DataMapHolder.clear();
         }
     }
 
-    private ChsDelta extractChsDelta(Object payload) {
-        if (payload instanceof ChsDelta chsDelta) {
-            return chsDelta;
+    private MonitorFilingMessage extractTopicMessage(final Object payload) {
+        if (payload instanceof MonitorFilingMessage message) {
+            return message;
         }
+
         String errorMessage = "Invalid payload type, payload: [%s]".formatted(payload.toString());
         LOGGER.error(errorMessage, DataMapHolder.getLogMap());
         throw new NonRetryableException(errorMessage);

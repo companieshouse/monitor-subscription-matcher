@@ -1,8 +1,8 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.service;
 
 import org.springframework.stereotype.Service;
-import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingMessage;
 import uk.gov.companieshouse.monitorsubscription.matcher.kafka.Router;
 
 /**
@@ -19,8 +19,8 @@ public class DefaultMessageService implements Router {
     }
 
     @Override
-    public void route(final ChsDelta delta) {
-        logger.debug(String.format("route(delta=%s) method called.", delta));
+    public void route(final MonitorFilingMessage message) {
+        logger.debug(String.format("route(message=%s) method called.", message));
 
         // Message processing goes here.
     }

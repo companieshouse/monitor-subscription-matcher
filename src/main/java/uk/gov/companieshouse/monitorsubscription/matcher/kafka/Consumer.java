@@ -5,8 +5,8 @@ import static java.lang.String.format;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingMessage;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
 
@@ -24,12 +24,12 @@ public class Consumer {
     }
 
     @KafkaListener(
-            id = "${consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactory",
-            topics = {"${consumer.topic}"},
-            groupId = "${consumer.group-id}"
+            id = "${kafka.consumer.filing.group-id}",
+            topics = {"${kafka.consumer.filing.topic}"},
+            groupId = "${kafka.consumer.filing.group-id}"
     )
-    public void consume(final Message<ChsDelta> message) {
+    public void consume(final Message<MonitorFilingMessage> message) {
         logger.trace(format("consume(message=%s) method called.", message));
         try {
             router.route(message.getPayload());
