@@ -24,6 +24,7 @@
     <maven-surefire-plugin.version>${maven-surefire.version}</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>${maven-surefire.version}</maven-failsafe-plugin.version>
     <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
+    <kafka-avro.version>1.11.1</kafka-avro.version>
 
     <commons-text.version>1.13.0</commons-text.version>
     <wiremock.version>3.11.0</wiremock.version>
@@ -91,7 +92,7 @@
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
-      <version>1.12.0</version>
+      <version>${kafka-avro.version}</version>
     </dependency>
     <!-- /Transitive Dependencies -->
 
@@ -181,6 +182,7 @@
 
   <build>
     <plugins>
+      <!-- Spring Boot Maven Plugin -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -193,6 +195,27 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- Avro Maven Plugin -->
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>${kafka-avro.version}</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>schema</goal>
+            </goals>
+            <configuration>
+              <!-- Use your custom schemas folder under resources -->
+              <sourceDirectory>${project.basedir}/src/main/resources/schemas</sourceDirectory>
+              <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
@@ -295,6 +318,17 @@
         </configuration>
       </plugin>
     </plugins>
+
+    <!-- Exclude Avro schemas from the final jar -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>schemas/**</exclude>
+        </excludes>
+      </resource>
+    </resources>
+
   </build>
 
 </project>

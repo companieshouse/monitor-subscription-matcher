@@ -2,8 +2,8 @@ package uk.gov.companieshouse.monitorsubscription.matcher.service;
 
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingMessage;
 import uk.gov.companieshouse.monitorsubscription.matcher.kafka.Router;
+import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
 
 /**
  * Default message consumer to allow the build to compile. We need at least one qualifying bean with the Router
@@ -19,7 +19,7 @@ public class DefaultMessageService implements Router {
     }
 
     @Override
-    public void route(final MonitorFilingMessage message) {
+    public void route(final MonitorFiling message) {
         logger.debug(String.format("route(message=%s) method called.", message));
 
         // Message processing goes here.

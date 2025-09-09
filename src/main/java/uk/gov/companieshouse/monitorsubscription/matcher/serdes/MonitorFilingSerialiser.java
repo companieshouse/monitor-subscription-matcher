@@ -12,29 +12,30 @@ import org.apache.avro.reflect.ReflectDatumWriter;
 import org.apache.kafka.common.serialization.Serializer;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingMessage;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
+import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
 
-public class MonitorFilingMessageSerialiser implements Serializer<MonitorFilingMessage> {
+public class MonitorFilingSerialiser implements Serializer<MonitorFiling> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
     @Override
-    public byte[] serialize(final String topic, final MonitorFilingMessage data) {
-        LOGGER.debug(format("serialise() -> [Topic: %s, Data: %s]", topic, data));
+    public byte[] serialize(final String topic, final MonitorFiling data) {
+        LOGGER.debug(format("serialise() -> [Topic: %s, Payload: %s]", topic, data));
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Encoder encoder = EncoderFactory.get().directBinaryEncoder(outputStream, null);
-        DatumWriter<MonitorFilingMessage> writer = getDatumWriter();
+        DatumWriter<MonitorFiling> writer = getDatumWriter();
         try {
             writer.write(data, encoder);
+
         } catch (IOException ex) {
             throw new NonRetryableException("Error serialising delta", ex);
         }
         return outputStream.toByteArray();
     }
 
-    public DatumWriter<MonitorFilingMessage> getDatumWriter() {
-        return new ReflectDatumWriter<>(MonitorFilingMessage.class);
+    public DatumWriter<MonitorFiling> getDatumWriter() {
+        return new ReflectDatumWriter<>(MonitorFiling.class);
     }
 }

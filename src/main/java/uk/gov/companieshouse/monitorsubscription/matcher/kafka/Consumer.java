@@ -2,6 +2,8 @@ package uk.gov.companieshouse.monitorsubscription.matcher.kafka;
 
 import static java.lang.String.format;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
@@ -9,6 +11,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingMessage;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
+import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
 
 @Component
 public class Consumer {
@@ -29,9 +32,18 @@ public class Consumer {
             topics = {"${kafka.consumer.filing.topic}"},
             groupId = "${kafka.consumer.filing.group-id}"
     )
-    public void consume(final Message<MonitorFilingMessage> message) {
-        logger.trace(format("consume(message=%s) method called.", message));
+    public void consume(final Message<MonitorFiling> message) {
+        logger.debug("********************************************************************************************");
+        logger.debug(format("consume(message=%s) method called.", message));
         try {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+            //String jsonValue = writer.writeValueAsString(message.getPayload());
+            String jsonValue = writer.writeValueAsString(message);
+
+            logger.debug(jsonValue);
+
+            //router.route(message.getPayload());
             router.route(message.getPayload());
 
         } catch (RetryableException ex) {
@@ -40,6 +52,14 @@ public class Consumer {
             );
             messageFlags.setRetryable(true);
             throw ex;
+
+        } catch (Exception ex) {
+            logger.error("Non-Retryable exception encountered while processing message!",
+                    ex, DataMapHolder.getLogMap()
+            );
+            messageFlags.setRetryable(false);
+            throw new RuntimeException(ex);
         }
+        logger.debug("********************************************************************************************");
     }
 }

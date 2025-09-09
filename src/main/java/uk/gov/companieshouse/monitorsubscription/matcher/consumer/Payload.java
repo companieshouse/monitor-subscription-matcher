@@ -13,26 +13,18 @@ import java.util.Map;
 @JsonPropertyOrder({
         "company_number",
         "data",
-        "published_at",
-        "version",
-        "offset"
+        "is_delete"
 })
-public class MonitorFilingMessage {
+public class Payload {
 
     @JsonProperty("company_number")
     private String companyNumber;
 
     @JsonProperty("data")
-    private Payload data;
+    private Data data;
 
-    @JsonProperty("published_at")
-    private String publishedAt;
-
-    @JsonProperty("version")
-    private String version;
-
-    @JsonProperty("offset")
-    private String offset;
+    @JsonProperty("is_delete")
+    private Boolean isDelete;
 
     @JsonIgnore
     private final Map<String, Object> additionalProperties = new LinkedHashMap<>();
@@ -48,43 +40,23 @@ public class MonitorFilingMessage {
     }
 
     @JsonProperty("data")
-    public Payload getData() {
+    public Data getData() {
         return data;
     }
 
     @JsonProperty("data")
-    public void setData(Payload data) {
+    public void setData(Data data) {
         this.data = data;
     }
 
-    @JsonProperty("published_at")
-    public String getPublishedAt() {
-        return publishedAt;
+    @JsonProperty("is_delete")
+    public Boolean getIsDelete() {
+        return isDelete;
     }
 
-    @JsonProperty("published_at")
-    public void setPublishedAt(String publishedAt) {
-        this.publishedAt = publishedAt;
-    }
-
-    @JsonProperty("version")
-    public String getVersion() {
-        return version;
-    }
-
-    @JsonProperty("version")
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    @JsonProperty("offset")
-    public String getOffset() {
-        return offset;
-    }
-
-    @JsonProperty("offset")
-    public void setOffset(String offset) {
-        this.offset = offset;
+    @JsonProperty("is_delete")
+    public void setIsDelete(Boolean isDelete) {
+        this.isDelete = isDelete;
     }
 
     @JsonAnyGetter
@@ -99,12 +71,10 @@ public class MonitorFilingMessage {
 
     @Override
     public String toString() {
-        return "MonitorFilingMessage{" +
+        return "Payload{" +
                 "companyNumber='" + companyNumber + '\'' +
                 ", data=" + data +
-                ", publishedAt='" + publishedAt + '\'' +
-                ", version='" + version + '\'' +
-                ", offset='" + offset + '\'' +
+                ", isDelete=" + isDelete +
                 ", additionalProperties=" + additionalProperties +
                 '}';
     }

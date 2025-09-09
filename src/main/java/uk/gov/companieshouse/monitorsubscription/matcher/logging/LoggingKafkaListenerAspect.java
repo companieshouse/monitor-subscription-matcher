@@ -6,19 +6,19 @@ import static org.springframework.kafka.support.KafkaHeaders.RECEIVED_PARTITION;
 import static org.springframework.kafka.support.KafkaHeaders.RECEIVED_TOPIC;
 import static uk.gov.companieshouse.monitorsubscription.matcher.config.ApplicationConfig.NAMESPACE;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.UUID;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
-import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingMessage;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.Payload;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
 
@@ -54,6 +54,7 @@ class LoggingKafkaListenerAspect {
                     .orElse(1) - 1;
 
             MonitorFilingMessage monitorFilingMessage = extractTopicMessage(message.getPayload());
+            Payload data = monitorFilingMessage.getData();
 
             // TODO: Get the contextId from the MonitorFilingMessage when available
             String contextId = UUID.randomUUID().toString();
@@ -64,15 +65,15 @@ class LoggingKafkaListenerAspect {
                     .topic((String) headers.get(RECEIVED_TOPIC))
                     .partition((Integer) headers.get(RECEIVED_PARTITION))
                     .offset((Long) headers.get(OFFSET));
-            /*
-            LOGGER.info(chsDelta.getIsDelete() ? LOG_MESSAGE_DELETE_RECEIVED : LOG_MESSAGE_RECEIVED,
+
+            LOGGER.info(data.getIsDelete() ? LOG_MESSAGE_DELETE_RECEIVED : LOG_MESSAGE_RECEIVED,
                     DataMapHolder.getLogMap());
-            */
+
             Object result = joinPoint.proceed();
-            /*
-            LOGGER.info(chsDelta.getIsDelete() ? LOG_MESSAGE_DELETE_PROCESSED : LOG_MESSAGE_PROCESSED,
+
+            LOGGER.info(data.getIsDelete() ? LOG_MESSAGE_DELETE_PROCESSED : LOG_MESSAGE_PROCESSED,
                     DataMapHolder.getLogMap());
-            */
+
             return result;
 
         } catch (RetryableException ex) {
@@ -94,12 +95,22 @@ class LoggingKafkaListenerAspect {
     }
 
     private MonitorFilingMessage extractTopicMessage(final Object payload) {
-        if (payload instanceof MonitorFilingMessage message) {
-            return message;
-        }
+        LOGGER.trace("extractTopicMessage(payload=%d bytes) method called".formatted(payload.toString().getBytes().length));
+        try {
+            LOGGER.debug(new ObjectMapper().writeValueAsString(payload));
 
-        String errorMessage = "Invalid payload type, payload: [%s]".formatted(payload.toString());
-        LOGGER.error(errorMessage, DataMapHolder.getLogMap());
-        throw new NonRetryableException(errorMessage);
+            if (payload instanceof MonitorFilingMessage message) {
+                return message;
+            }
+
+            String errorMessage = "Invalid payload type, payload: [%s]".formatted(payload.toString());
+            LOGGER.error(errorMessage, DataMapHolder.getLogMap());
+            throw new NonRetryableException(errorMessage);
+
+        } catch(JsonProcessingException ex) {
+            String errorMessage = "Error processing payload: [%s]".formatted(payload.toString());
+            LOGGER.error(errorMessage, ex, DataMapHolder.getLogMap());
+            throw new NonRetryableException(errorMessage, ex);
+        }
     }
 }
