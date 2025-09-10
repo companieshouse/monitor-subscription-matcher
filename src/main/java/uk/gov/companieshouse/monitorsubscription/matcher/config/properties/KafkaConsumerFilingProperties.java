@@ -3,7 +3,7 @@ package uk.gov.companieshouse.monitorsubscription.matcher.config.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@ConfigurationProperties(prefix = "kafka.consumer.filing")
+@ConfigurationProperties(prefix = "spring.kafka.consumer.filing")
 @Component
 public class KafkaConsumerFilingProperties {
 

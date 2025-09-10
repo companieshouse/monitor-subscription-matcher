@@ -1,8 +1,8 @@
-package uk.gov.companieshouse.monitorsubscription.matcher.kafka;
+package uk.gov.companieshouse.monitorsubscription.matcher.consumer;
 
 import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
 
-public interface Router {
+public interface MessageRouter {
 
     void route(MonitorFiling message);
 

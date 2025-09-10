@@ -3,39 +3,46 @@ package uk.gov.companieshouse.monitorsubscription.matcher.serdes;
 import static java.lang.String.format;
 import static uk.gov.companieshouse.monitorsubscription.matcher.config.ApplicationConfig.NAMESPACE;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import consumer.exception.NonRetryableErrorException;
+import java.nio.charset.StandardCharsets;
 import org.apache.avro.io.DatumWriter;
-import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
-import org.apache.avro.reflect.ReflectDatumWriter;
+import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.kafka.common.serialization.Serializer;
+import org.springframework.stereotype.Component;
+import uk.gov.companieshouse.kafka.serialization.AvroSerializer;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
+import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
 import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
 
-public class MonitorFilingSerialiser implements Serializer<MonitorFiling> {
+@Component
+public class MonitorFilingSerialiser implements Serializer<Object> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
     @Override
-    public byte[] serialize(final String topic, final MonitorFiling data) {
-        LOGGER.debug(format("serialise() -> [Topic: %s, Payload: %s]", topic, data));
+    public byte[] serialize(final String topic, final Object payload) {
+        LOGGER.trace(format("serialize() -> [Topic: %s, Payload: %s]", topic, payload.getClass().getSimpleName()));
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        Encoder encoder = EncoderFactory.get().directBinaryEncoder(outputStream, null);
-        DatumWriter<MonitorFiling> writer = getDatumWriter();
         try {
-            writer.write(data, encoder);
+            if (payload instanceof byte[]) {
+                return (byte[]) payload;
+            }
 
-        } catch (IOException ex) {
-            throw new NonRetryableException("Error serialising delta", ex);
+            if (payload instanceof MonitorFiling monitorFiling) {
+                DatumWriter<MonitorFiling> writer = new SpecificDatumWriter<>();
+                EncoderFactory encoderFactory = EncoderFactory.get();
+
+                AvroSerializer<MonitorFiling> avroSerializer = new AvroSerializer<>(writer, encoderFactory);
+                return avroSerializer.toBinary(monitorFiling);
+            }
+
+            return payload.toString().getBytes(StandardCharsets.UTF_8);
+
+        } catch (Exception ex) {
+            LOGGER.error("Serialization exception while writing to byte array", ex, DataMapHolder.getLogMap());
+            throw new NonRetryableErrorException("Serialization exception while writing to byte array", ex);
         }
-        return outputStream.toByteArray();
-    }
-
-    public DatumWriter<MonitorFiling> getDatumWriter() {
-        return new ReflectDatumWriter<>(MonitorFiling.class);
     }
 }

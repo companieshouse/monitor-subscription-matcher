@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.monitorsubscription.matcher.consumer;
+package uk.gov.companieshouse.monitorsubscription.matcher.consumer.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -24,6 +24,13 @@ public class DescriptionValues {
 
     @JsonIgnore
     private final Map<String, Object> additionalProperties = new LinkedHashMap<>();
+
+    /**
+     * No args constructor for use in serialization
+     */
+    public DescriptionValues() {
+        super();
+    }
 
     @JsonProperty("appointment_date")
     public String getAppointmentDate() {

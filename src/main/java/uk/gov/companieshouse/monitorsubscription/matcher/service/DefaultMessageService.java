@@ -2,15 +2,15 @@ package uk.gov.companieshouse.monitorsubscription.matcher.service;
 
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.monitorsubscription.matcher.kafka.Router;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MessageRouter;
 import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
 
 /**
- * Default message consumer to allow the build to compile. We need at least one qualifying bean with the Router
+ * Default message consumer to allow the build to compile. We need at least one qualifying bean with the MessageRouter
  * interface in order for the build to compile, but this can be removed later on.
  */
 @Service
-public class DefaultMessageService implements Router {
+public class DefaultMessageService implements MessageRouter {
 
     private final Logger logger;
 

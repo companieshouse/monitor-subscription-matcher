@@ -24,15 +24,15 @@ import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
-import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
+import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
 
 @ExtendWith(MockitoExtension.class)
 class LoggingKafkaListenerAspectTest {
 
     private static final String CONTEXT_ID = "context_id";
-    private static final String TOPIC = "filing-history-delta";
+    private static final String TOPIC = "monitor-filing";
     private static final Pattern INFO_EVENT_PATTERN = Pattern.compile(
             "event: info|\"event\":\"info\"");
     private static final Pattern ERROR_EVENT_PATTERN = Pattern.compile(
@@ -50,7 +50,7 @@ class LoggingKafkaListenerAspectTest {
     private static final Pattern RETRY_COUNT_FOUR_PATTERN = Pattern.compile(
             "retry_count: 4|\"retry_count\":4");
     private static final Pattern MAIN_TOPIC_PATTERN = Pattern.compile(
-            "topic: filing-history-delta|\"topic\":\"filing-history-delta\"");
+            "topic: monitor-filing|\"topic\":\"monitor-filing\"");
     private static final Pattern PARTITION_ZERO_PATTERN = Pattern.compile(
             "partition: 0|\"partition\":0");
     private static final Pattern OFFSET_ZERO_PATTERN = Pattern.compile(
@@ -61,9 +61,9 @@ class LoggingKafkaListenerAspectTest {
     @Mock
     private ProceedingJoinPoint joinPoint;
     @Mock
-    private Message<ChsDelta> message;
+    private Message<MonitorFiling> message;
     @Mock
-    private ChsDelta delta;
+    private MonitorFiling payload;
     @Mock
     private Message<String> invalidMessage;
 
@@ -83,9 +83,9 @@ class LoggingKafkaListenerAspectTest {
                         OFFSET, 0L));
         Object expected = "result";
         when(joinPoint.getArgs()).thenReturn(new Object[]{message});
-        when(message.getPayload()).thenReturn(delta);
+        when(message.getPayload()).thenReturn(payload);
         when(message.getHeaders()).thenReturn(headers);
-        when(delta.getContextId()).thenReturn(CONTEXT_ID);
+        //when(payload.getContextId()).thenReturn(CONTEXT_ID);
         when(joinPoint.proceed()).thenReturn(expected);
 
         // when
@@ -108,10 +108,10 @@ class LoggingKafkaListenerAspectTest {
                         OFFSET, 0L));
         Object expected = "result";
         when(joinPoint.getArgs()).thenReturn(new Object[]{message});
-        when(message.getPayload()).thenReturn(delta);
+        when(message.getPayload()).thenReturn(payload);
         when(message.getHeaders()).thenReturn(headers);
-        when(delta.getContextId()).thenReturn(CONTEXT_ID);
-        when(delta.getIsDelete()).thenReturn(true);
+        //when(payload.getContextId()).thenReturn(CONTEXT_ID);
+        //when(payload.getIsDelete()).thenReturn(true);
         when(joinPoint.proceed()).thenReturn(expected);
 
         // when
@@ -133,9 +133,9 @@ class LoggingKafkaListenerAspectTest {
                         RECEIVED_PARTITION, 0,
                         OFFSET, 0L));
         when(joinPoint.getArgs()).thenReturn(new Object[]{message});
-        when(message.getPayload()).thenReturn(delta);
+        when(message.getPayload()).thenReturn(payload);
         when(message.getHeaders()).thenReturn(headers);
-        when(delta.getContextId()).thenReturn(CONTEXT_ID);
+        //when(payload.getContextId()).thenReturn(CONTEXT_ID);
         when(joinPoint.proceed()).thenThrow(RetryableException.class);
 
         // when
@@ -159,9 +159,9 @@ class LoggingKafkaListenerAspectTest {
                         RECEIVED_PARTITION, 0,
                         OFFSET, 0L));
         when(joinPoint.getArgs()).thenReturn(new Object[]{message});
-        when(message.getPayload()).thenReturn(delta);
+        when(message.getPayload()).thenReturn(payload);
         when(message.getHeaders()).thenReturn(headers);
-        when(delta.getContextId()).thenReturn(CONTEXT_ID);
+        //when(payload.getContextId()).thenReturn(CONTEXT_ID);
         when(joinPoint.proceed()).thenThrow(RetryableException.class);
 
         // when

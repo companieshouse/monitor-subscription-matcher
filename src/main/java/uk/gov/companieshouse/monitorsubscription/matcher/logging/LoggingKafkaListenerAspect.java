@@ -17,10 +17,10 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingMessage;
-import uk.gov.companieshouse.monitorsubscription.matcher.consumer.Payload;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.Payload;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
+import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
 
 //@Component
 //@Aspect
@@ -53,8 +53,8 @@ class LoggingKafkaListenerAspect {
                     .map(attempts -> ByteBuffer.wrap((byte[]) attempts).getInt())
                     .orElse(1) - 1;
 
-            MonitorFilingMessage monitorFilingMessage = extractTopicMessage(message.getPayload());
-            Payload data = monitorFilingMessage.getData();
+            MonitorFiling monitorFiling = extractTopicMessage(message.getPayload());
+            Payload payload = new ObjectMapper().readValue(monitorFiling.getData().toString(), Payload.class);
 
             // TODO: Get the contextId from the MonitorFilingMessage when available
             String contextId = UUID.randomUUID().toString();
@@ -66,12 +66,14 @@ class LoggingKafkaListenerAspect {
                     .partition((Integer) headers.get(RECEIVED_PARTITION))
                     .offset((Long) headers.get(OFFSET));
 
-            LOGGER.info(data.getIsDelete() ? LOG_MESSAGE_DELETE_RECEIVED : LOG_MESSAGE_RECEIVED,
+            boolean isDelete = payload.getIsDelete() != null && payload.getIsDelete();
+
+            LOGGER.info(isDelete ? LOG_MESSAGE_DELETE_RECEIVED : LOG_MESSAGE_RECEIVED,
                     DataMapHolder.getLogMap());
 
             Object result = joinPoint.proceed();
 
-            LOGGER.info(data.getIsDelete() ? LOG_MESSAGE_DELETE_PROCESSED : LOG_MESSAGE_PROCESSED,
+            LOGGER.info(isDelete ? LOG_MESSAGE_DELETE_PROCESSED : LOG_MESSAGE_PROCESSED,
                     DataMapHolder.getLogMap());
 
             return result;
@@ -94,12 +96,12 @@ class LoggingKafkaListenerAspect {
         }
     }
 
-    private MonitorFilingMessage extractTopicMessage(final Object payload) {
+    private MonitorFiling extractTopicMessage(final Object payload) {
         LOGGER.trace("extractTopicMessage(payload=%d bytes) method called".formatted(payload.toString().getBytes().length));
         try {
             LOGGER.debug(new ObjectMapper().writeValueAsString(payload));
 
-            if (payload instanceof MonitorFilingMessage message) {
+            if (payload instanceof MonitorFiling message) {
                 return message;
             }
 

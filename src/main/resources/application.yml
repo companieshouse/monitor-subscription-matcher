@@ -3,6 +3,13 @@ spring:
     name: monitor-subscription-matcher
   kafka:
     bootstrap-servers: ${KAFKA_BROKER_ADDR:localhost:9092}
+    consumer:
+      filing:
+        topic: ${FILING_TOPIC:monitor-filing}
+        group-id: ${FILING_CONSUMER_GROUP_NAME:monitor-filing-consumer-group}
+        max-attempts: ${MAX_ATTEMPTS:5}
+        backoff-delay: ${BACKOFF_DELAY:1000}
+        concurrency: ${CONCURRENT_LISTENER_INSTANCES:1}
 
 management:
   endpoints:
@@ -13,15 +20,6 @@ management:
     defaults.enabled: true
   server:
     port: 8082
-
-kafka:
-  consumer:
-    filing:
-      topic: ${FILING_TOPIC:monitor-filing}
-      group-id: ${FILING_CONSUMER_GROUP_NAME:monitor-filing-consumer-group}
-      max-attempts: ${MAX_ATTEMPTS:5}
-      backoff-delay: ${BACKOFF_DELAY:1000}
-      concurrency: ${CONCURRENT_LISTENER_INSTANCES:1}
 
 server:
   port: ${PORT:8081}

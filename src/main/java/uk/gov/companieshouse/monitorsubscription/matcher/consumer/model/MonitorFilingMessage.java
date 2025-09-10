@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.monitorsubscription.matcher.consumer;
+package uk.gov.companieshouse.monitorsubscription.matcher.consumer.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -13,21 +13,36 @@ import java.util.Map;
 @JsonPropertyOrder({
         "company_number",
         "data",
-        "is_delete"
+        "published_at",
+        "version",
+        "offset"
 })
-public class Payload {
+public class MonitorFilingMessage {
 
     @JsonProperty("company_number")
     private String companyNumber;
 
     @JsonProperty("data")
-    private Data data;
+    private Payload data;
 
-    @JsonProperty("is_delete")
-    private Boolean isDelete;
+    @JsonProperty("published_at")
+    private String publishedAt;
+
+    @JsonProperty("version")
+    private String version;
+
+    @JsonProperty("offset")
+    private String offset;
 
     @JsonIgnore
     private final Map<String, Object> additionalProperties = new LinkedHashMap<>();
+
+    /**
+     * No args constructor for use in serialization
+     */
+    public MonitorFilingMessage() {
+        super();
+    }
 
     @JsonProperty("company_number")
     public String getCompanyNumber() {
@@ -40,23 +55,43 @@ public class Payload {
     }
 
     @JsonProperty("data")
-    public Data getData() {
+    public Payload getData() {
         return data;
     }
 
     @JsonProperty("data")
-    public void setData(Data data) {
+    public void setData(Payload data) {
         this.data = data;
     }
 
-    @JsonProperty("is_delete")
-    public Boolean getIsDelete() {
-        return isDelete;
+    @JsonProperty("published_at")
+    public String getPublishedAt() {
+        return publishedAt;
     }
 
-    @JsonProperty("is_delete")
-    public void setIsDelete(Boolean isDelete) {
-        this.isDelete = isDelete;
+    @JsonProperty("published_at")
+    public void setPublishedAt(String publishedAt) {
+        this.publishedAt = publishedAt;
+    }
+
+    @JsonProperty("version")
+    public String getVersion() {
+        return version;
+    }
+
+    @JsonProperty("version")
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    @JsonProperty("offset")
+    public String getOffset() {
+        return offset;
+    }
+
+    @JsonProperty("offset")
+    public void setOffset(String offset) {
+        this.offset = offset;
     }
 
     @JsonAnyGetter
@@ -71,10 +106,12 @@ public class Payload {
 
     @Override
     public String toString() {
-        return "Payload{" +
+        return "MonitorFilingMessage{" +
                 "companyNumber='" + companyNumber + '\'' +
                 ", data=" + data +
-                ", isDelete=" + isDelete +
+                ", publishedAt='" + publishedAt + '\'' +
+                ", version='" + version + '\'' +
+                ", offset='" + offset + '\'' +
                 ", additionalProperties=" + additionalProperties +
                 '}';
     }
