@@ -5,19 +5,17 @@ import static uk.gov.companieshouse.monitorsubscription.matcher.config.Applicati
 
 import consumer.exception.NonRetryableErrorException;
 import java.nio.charset.StandardCharsets;
+import monitor.transaction;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.kafka.common.serialization.Serializer;
-import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.kafka.serialization.AvroSerializer;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
-import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
 
-@Component
-public class MonitorFilingSerialiser implements Serializer<Object> {
+public class MonitorFilingSerializer implements Serializer<Object> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
@@ -30,11 +28,11 @@ public class MonitorFilingSerialiser implements Serializer<Object> {
                 return (byte[]) payload;
             }
 
-            if (payload instanceof MonitorFiling monitorFiling) {
-                DatumWriter<MonitorFiling> writer = new SpecificDatumWriter<>();
+            if (payload instanceof transaction monitorFiling) {
+                DatumWriter<transaction> writer = new SpecificDatumWriter<>();
                 EncoderFactory encoderFactory = EncoderFactory.get();
 
-                AvroSerializer<MonitorFiling> avroSerializer = new AvroSerializer<>(writer, encoderFactory);
+                AvroSerializer<transaction> avroSerializer = new AvroSerializer<>(writer, encoderFactory);
                 return avroSerializer.toBinary(monitorFiling);
             }
 

@@ -13,9 +13,6 @@ import uk.gov.companieshouse.environment.impl.EnvironmentReaderImpl;
 import uk.gov.companieshouse.kafka.serialization.SerializerFactory;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.monitorsubscription.matcher.schema.MonitorFiling;
-import uk.gov.companieshouse.monitorsubscription.matcher.serdes.GenericAvroDeserializer;
-import uk.gov.companieshouse.monitorsubscription.matcher.serdes.GenericAvroSerializer;
 
 
 @Configuration
@@ -31,16 +28,6 @@ public class ApplicationConfig implements WebMvcConfigurer {
     @Bean
     SerializerFactory serializerFactory() {
         return new SerializerFactory();
-    }
-
-    @Bean
-    GenericAvroDeserializer<MonitorFiling> monitorFilingAvroDeserializer() {
-        return new GenericAvroDeserializer<>(MonitorFiling.class);
-    }
-
-    @Bean
-    GenericAvroSerializer monitorFilingAvroSerializer() {
-        return new GenericAvroSerializer();
     }
 
     @Bean

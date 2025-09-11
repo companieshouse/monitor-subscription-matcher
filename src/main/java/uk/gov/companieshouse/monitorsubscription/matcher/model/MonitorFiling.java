@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.monitorsubscription.matcher.consumer.model;
+package uk.gov.companieshouse.monitorsubscription.matcher.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -17,7 +17,7 @@ import java.util.Map;
         "version",
         "offset"
 })
-public class MonitorFilingMessage {
+public class MonitorFiling {
 
     @JsonProperty("company_number")
     private String companyNumber;
@@ -40,7 +40,7 @@ public class MonitorFilingMessage {
     /**
      * No args constructor for use in serialization
      */
-    public MonitorFilingMessage() {
+    public MonitorFiling() {
         super();
     }
 
@@ -106,7 +106,7 @@ public class MonitorFilingMessage {
 
     @Override
     public String toString() {
-        return "MonitorFilingMessage{" +
+        return "MonitorFiling{" +
                 "companyNumber='" + companyNumber + '\'' +
                 ", data=" + data +
                 ", publishedAt='" + publishedAt + '\'' +

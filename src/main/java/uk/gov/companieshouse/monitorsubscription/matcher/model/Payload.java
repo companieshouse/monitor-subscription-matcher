@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.monitorsubscription.matcher.consumer.model;
+package uk.gov.companieshouse.monitorsubscription.matcher.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;

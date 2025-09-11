@@ -38,7 +38,7 @@
     <private-api-sdk-java.version>4.0.343</private-api-sdk-java.version>
     <structured-logging.version>3.0.39</structured-logging.version>
     <ch-kafka.version>3.0.3</ch-kafka.version>
-    <kafka-models.version>3.0.20</kafka-models.version>
+    <kafka-models.version>unversioned</kafka-models.version>
 
     <!--explicit versions of transitive dependencies with vulnerabilities in previous versions-->
     <jayway-jsonpath.version>2.9.0</jayway-jsonpath.version>
@@ -207,26 +207,6 @@
         </executions>
       </plugin>
 
-      <!-- Avro Maven Plugin -->
-      <plugin>
-        <groupId>org.apache.avro</groupId>
-        <artifactId>avro-maven-plugin</artifactId>
-        <version>${avro.version}</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>schema</goal>
-            </goals>
-            <configuration>
-              <!-- Use your custom schemas folder under resources -->
-              <sourceDirectory>${project.basedir}/src/main/resources/schemas</sourceDirectory>
-              <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
@@ -329,16 +309,6 @@
         </configuration>
       </plugin>
     </plugins>
-
-    <!-- Exclude Avro schemas from the final jar -->
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>schemas/**</exclude>
-        </excludes>
-      </resource>
-    </resources>
 
   </build>
 
