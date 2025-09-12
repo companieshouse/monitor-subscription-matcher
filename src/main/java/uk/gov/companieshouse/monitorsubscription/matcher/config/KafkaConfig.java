@@ -47,7 +47,7 @@ public class KafkaConfig {
     }
 
     /**
-     * Kafka Consumer Factory.
+     * Kafka MonitorFilingConsumer Factory.
      */
     @Bean("kafkaConsumerFactory")
     public ConsumerFactory<String, transaction> kafkaConsumerFactory() {

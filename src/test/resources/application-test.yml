@@ -1,0 +1,18 @@
+spring:
+
+  application:
+    name: monitor-subscription-matcher
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingSerializer
+    consumer:
+      value-deserializer: uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingDeserializer
+      auto-offset-reset: earliest
+      filing:
+        topic: test-topic
+        group-id: test-group-id
+        max-attempts: 5
+        backoff-delay: 1000
+        concurrency: 1

@@ -14,7 +14,7 @@ import uk.gov.companieshouse.logging.util.DataMap;
 
 /**
  * Logs message details before and after it has been processed by
- * the {@link Consumer main consumer}.<br>
+ * the {@link MonitorFilingConsumer main consumer}.<br>
  * <br>
  * Details that will be logged will include:
  * <ul>
@@ -36,12 +36,12 @@ public class MessageLoggingAspect {
     public MessageLoggingAspect(Logger logger) {
         this.logger = logger;
     }
-    @Before("execution(* uk.gov.companieshouse.monitorsubscription.matcher.consumer.Consumer.consume(..))")
+    @Before("execution(* uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingConsumer.consume(..))")
     void logBeforeMainConsumer(JoinPoint joinPoint) {
         logMessage(LOG_MESSAGE_RECEIVED, (Message<?>)joinPoint.getArgs()[0]);
     }
 
-    @After("execution(* uk.gov.companieshouse.monitorsubscription.matcher.consumer.Consumer.consume(..))")
+    @After("execution(* uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingConsumer.consume(..))")
     void logAfterMainConsumer(JoinPoint joinPoint) {
         logMessage(LOG_MESSAGE_PROCESSED, (Message<?>)joinPoint.getArgs()[0]);
     }

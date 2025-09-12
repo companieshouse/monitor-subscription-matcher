@@ -25,10 +25,12 @@
     <maven-failsafe-plugin.version>${maven-surefire.version}</maven-failsafe-plugin.version>
     <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
 
+    <software.amazon.awssdk.version>2.31.78</software.amazon.awssdk.version>
     <avro.version>1.12.0</avro.version>
 
     <commons-text.version>1.13.0</commons-text.version>
     <wiremock.version>3.11.0</wiremock.version>
+    <system-rules.version>1.19.0</system-rules.version>
 
     <skip.unit.tests>false</skip.unit.tests>
     <skip.integration.tests>false</skip.integration.tests>
@@ -107,6 +109,11 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.5</version>
     </dependency>
 
     <!-- Internal Dependencies -->
@@ -187,6 +194,37 @@
           <artifactId>json-path</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-rules</artifactId>
+      <version>${system-rules.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.pcollections</groupId>
+          <artifactId>pcollections</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>kafka</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
