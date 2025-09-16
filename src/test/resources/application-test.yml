@@ -16,3 +16,6 @@ spring:
         max-attempts: 5
         backoff-delay: 1000
         concurrency: 1
+
+server:
+  port: 9191
