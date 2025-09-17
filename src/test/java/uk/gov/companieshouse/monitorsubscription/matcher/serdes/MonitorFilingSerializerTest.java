@@ -46,7 +46,7 @@ public class MonitorFilingSerializerTest {
 
     @Test
     public void givenStringPayload_whenSerialized_thenByteArrayCreated() {
-        byte[] result = underTest.serialize("test-topic", new String("This is a test string"));
+        byte[] result = underTest.serialize("test-topic", "This is a test string");
 
         assertThat(result, is(notNullValue()));
         assertThat(result.length, is(21));
