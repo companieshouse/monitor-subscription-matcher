@@ -36,6 +36,7 @@ public class MessageLoggingAspect {
     public MessageLoggingAspect(Logger logger) {
         this.logger = logger;
     }
+
     @Before("execution(* uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingConsumer.consume(..))")
     void logBeforeMainConsumer(JoinPoint joinPoint) {
         logMessage(LOG_MESSAGE_RECEIVED, (Message<?>)joinPoint.getArgs()[0]);

@@ -171,4 +171,8 @@ public class TestUtils {
     public static byte[] buildRawAvroMessage() throws IOException {
         return new MonitorFilingSerializer().serialize("test-topic", buildUpdateMessage().getPayload());
     }
+
+    public static MonitorFiling buildMonitorFilingFromUpdateMessage() throws IOException {
+        return new ObjectMapper().readValue(MONITOR_FILING_UPDATE_MESSAGE, MonitorFiling.class);
+    }
 }

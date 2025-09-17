@@ -61,6 +61,7 @@ public class KafkaConfigTest {
 
         assertThat(result, is(notNullValue()));
     }
+
     @Test
     public void givenConfigProvider_whenKafkaListenerContainerFactoryCreated_thenNoErrorsAreRaised() {
         ConcurrentKafkaListenerContainerFactory<String, transaction> result = underTest.kafkaListenerContainerFactory();
