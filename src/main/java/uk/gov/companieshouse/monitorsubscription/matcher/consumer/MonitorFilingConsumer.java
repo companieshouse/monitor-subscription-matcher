@@ -87,7 +87,7 @@ public class MonitorFilingConsumer {
         }
     }
 
-    public void setCallback(Consumer<transaction> callback) {
+    public void setCallback(final Consumer<transaction> callback) {
         this.callback = callback;
     }
 

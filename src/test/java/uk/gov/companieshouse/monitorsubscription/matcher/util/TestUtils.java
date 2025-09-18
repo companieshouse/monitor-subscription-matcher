@@ -5,6 +5,7 @@ import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQC
 import com.fasterxml.jackson.databind.ObjectMapper;
 import consumer.exception.NonRetryableErrorException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import monitor.transaction;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.springframework.messaging.Message;
@@ -13,6 +14,15 @@ import uk.gov.companieshouse.monitorsubscription.matcher.model.MonitorFiling;
 import uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingSerializer;
 
 public class TestUtils {
+
+    public static final String ID = "654321";
+    public static final String COMPANY_NUMBER = "00006400";
+    public static final LocalDateTime CREATED_DATE = LocalDateTime.parse("2023-10-10T10:00:00");
+    public static final Boolean ACTIVE = Boolean.TRUE;
+    public static final LocalDateTime UPDATED_DATE = CREATED_DATE.plusDays(1);
+    public static final String QUERY = "QUERY transaction WHERE company_number=\"%s\"".formatted(COMPANY_NUMBER);
+    public static final String USER_ID = "";
+
 
     public static final String MONITOR_FILING_UPDATE_MESSAGE = """
             {
@@ -170,5 +180,9 @@ public class TestUtils {
 
     public static byte[] buildRawAvroMessage() throws IOException {
         return new MonitorFilingSerializer().serialize("test-topic", buildUpdateMessage().getPayload());
+    }
+
+    public static MonitorFiling buildMonitorFilingFromUpdateMessage() throws IOException {
+        return new ObjectMapper().readValue(MONITOR_FILING_UPDATE_MESSAGE, MonitorFiling.class);
     }
 }

@@ -17,5 +17,10 @@ spring:
         backoff-delay: 1000
         concurrency: 1
 
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: monitor
+
 server:
   port: 9191

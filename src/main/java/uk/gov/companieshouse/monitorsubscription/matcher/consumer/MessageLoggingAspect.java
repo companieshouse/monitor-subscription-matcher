@@ -36,6 +36,7 @@ public class MessageLoggingAspect {
     public MessageLoggingAspect(Logger logger) {
         this.logger = logger;
     }
+
     @Before("execution(* uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingConsumer.consume(..))")
     void logBeforeMainConsumer(JoinPoint joinPoint) {
         logMessage(LOG_MESSAGE_RECEIVED, (Message<?>)joinPoint.getArgs()[0]);
@@ -49,9 +50,9 @@ public class MessageLoggingAspect {
     private void logMessage(String logMessage, Message<?> incomingMessage) {
         MessageHeaders messageHeaders = incomingMessage.getHeaders();
 
-        var topic = Optional.ofNullable((String) messageHeaders.get(KafkaHeaders.RECEIVED_TOPIC)).orElse("no topic");
-        var partition = Optional.of((Integer) messageHeaders.get(KafkaHeaders.RECEIVED_PARTITION)).orElse(0);
-        var offset = Optional.of((Long) messageHeaders.get(KafkaHeaders.OFFSET)).orElse(0L);
+        var topic = (String) Optional.ofNullable(messageHeaders.get(KafkaHeaders.RECEIVED_TOPIC)).orElse("no topic");
+        var partition = (Integer) Optional.ofNullable(messageHeaders.get(KafkaHeaders.RECEIVED_PARTITION)).orElse(0);
+        var offset = (Long) Optional.ofNullable(messageHeaders.get(KafkaHeaders.OFFSET)).orElse(0L);
 
         var dataMap = new DataMap.Builder()
                 .topic(topic)
