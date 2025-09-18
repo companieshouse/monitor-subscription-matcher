@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.monitorsubscription.matcher.model;
+package uk.gov.companieshouse.monitorsubscription.matcher.consumer.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -23,7 +23,7 @@ public class MonitorFiling {
     private String companyNumber;
 
     @JsonProperty("data")
-    private Payload data;
+    private MonitorFilingData data;
 
     @JsonProperty("published_at")
     private String publishedAt;
@@ -55,12 +55,12 @@ public class MonitorFiling {
     }
 
     @JsonProperty("data")
-    public Payload getData() {
+    public MonitorFilingData getData() {
         return data;
     }
 
     @JsonProperty("data")
-    public void setData(Payload data) {
+    public void setData(MonitorFilingData data) {
         this.data = data;
     }
 

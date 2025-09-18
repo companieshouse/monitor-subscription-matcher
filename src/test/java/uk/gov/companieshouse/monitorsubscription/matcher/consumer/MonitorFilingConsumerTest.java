@@ -25,7 +25,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.monitorsubscription.matcher.converter.MonitorFilingConverter;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
-import uk.gov.companieshouse.monitorsubscription.matcher.model.MonitorFiling;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
 import uk.gov.companieshouse.monitorsubscription.matcher.service.MatcherService;
 
 @ExtendWith(MockitoExtension.class)

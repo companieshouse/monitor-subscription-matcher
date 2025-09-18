@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.anEmptyMap;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildDeleteMessage;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildDeleteMessageWithIgnoredFields;
@@ -20,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
-import uk.gov.companieshouse.monitorsubscription.matcher.model.MonitorFiling;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
 
 @ExtendWith(MockitoExtension.class)
 public class MonitorFilingConverterTest {

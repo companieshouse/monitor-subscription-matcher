@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.monitorsubscription.matcher.model;
+package uk.gov.companieshouse.monitorsubscription.matcher.producer.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -11,11 +11,15 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+        "app_id",
         "company_number",
         "data",
         "is_delete"
 })
-public class Payload {
+public class NotificationData {
+
+    @JsonProperty("app_id")
+    private String appId;
 
     @JsonProperty("company_number")
     private String companyNumber;
@@ -27,13 +31,16 @@ public class Payload {
     private Boolean isDelete;
 
     @JsonIgnore
-    private final Map<String, Object> additionalProperties = new LinkedHashMap<>();
+    private final Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
-    /**
-     * No args constructor for use in serialization
-     */
-    public Payload() {
-        super();
+    @JsonProperty("app_id")
+    public String getAppId() {
+        return appId;
+    }
+
+    @JsonProperty("app_id")
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
     @JsonProperty("company_number")
@@ -76,13 +83,4 @@ public class Payload {
         this.additionalProperties.put(name, value);
     }
 
-    @Override
-    public String toString() {
-        return "Payload{" +
-                "companyNumber='" + companyNumber + '\'' +
-                ", data=" + data +
-                ", isDelete=" + isDelete +
-                ", additionalProperties=" + additionalProperties +
-                '}';
-    }
 }

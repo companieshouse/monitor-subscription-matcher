@@ -7,8 +7,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
-import uk.gov.companieshouse.monitorsubscription.matcher.model.MonitorFiling;
-import uk.gov.companieshouse.monitorsubscription.matcher.model.Payload;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFilingData;
 
 @Component
 public class MonitorFilingConverter implements Converter<transaction, MonitorFiling> {
@@ -20,7 +20,7 @@ public class MonitorFilingConverter implements Converter<transaction, MonitorFil
 
         try {
             if(StringUtils.isNotEmpty(source.getData())) {
-                Payload metadata = new ObjectMapper().readValue(source.getData(), Payload.class);
+                MonitorFilingData metadata = new ObjectMapper().readValue(source.getData(), MonitorFilingData.class);
                 target.setData(metadata);
             }
 

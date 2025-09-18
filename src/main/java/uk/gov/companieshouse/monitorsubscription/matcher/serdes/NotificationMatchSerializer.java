@@ -4,7 +4,7 @@ import static java.lang.String.format;
 import static uk.gov.companieshouse.monitorsubscription.matcher.config.ApplicationConfig.NAMESPACE;
 
 import consumer.exception.NonRetryableErrorException;
-import monitor.transaction;
+import monitor.filing;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
@@ -14,19 +14,19 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
 
-public class MonitorFilingSerializer implements Serializer<transaction> {
+public class NotificationMatchSerializer implements Serializer<filing> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
     @Override
-    public byte[] serialize(final String topic, final transaction payload) {
+    public byte[] serialize(final String topic, final filing payload) {
         LOGGER.trace(format("serialize() -> [Topic: %s, Payload: %s]", topic, payload.getClass().getSimpleName()));
 
         try {
-            DatumWriter<transaction> writer = new SpecificDatumWriter<>();
+            DatumWriter<filing> writer = new SpecificDatumWriter<>();
             EncoderFactory encoderFactory = EncoderFactory.get();
 
-            AvroSerializer<transaction> avroSerializer = new AvroSerializer<>(writer, encoderFactory);
+            AvroSerializer<filing> avroSerializer = new AvroSerializer<>(writer, encoderFactory);
             return avroSerializer.toBinary(payload);
 
         } catch (Exception ex) {
@@ -34,4 +34,5 @@ public class MonitorFilingSerializer implements Serializer<transaction> {
             throw new NonRetryableErrorException("Serialization exception while writing to byte array", ex);
         }
     }
+
 }

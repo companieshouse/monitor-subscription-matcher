@@ -14,7 +14,7 @@ import uk.gov.companieshouse.monitorsubscription.matcher.converter.MonitorFiling
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
-import uk.gov.companieshouse.monitorsubscription.matcher.model.MonitorFiling;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
 import uk.gov.companieshouse.monitorsubscription.matcher.service.MatcherService;
 
 @Component
@@ -59,9 +59,8 @@ public class MonitorFilingConsumer {
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             include = RetryableException.class,
-            kafkaTemplate = "kafkaTemplate"
+            kafkaTemplate = "kafkaMonitorFilingTemplate"
     )
-
     public void consume(final Message<transaction> message) {
         logger.debug("consume(message=%s) method called.".formatted(message));
         try {

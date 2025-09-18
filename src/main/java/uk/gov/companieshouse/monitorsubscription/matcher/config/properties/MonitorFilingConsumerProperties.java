@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "spring.kafka.consumer.filing")
 @Component
-public class KafkaConsumerFilingProperties {
+public class MonitorFilingConsumerProperties {
 
     private String topic;
     private String groupId;

@@ -10,7 +10,7 @@ import monitor.transaction;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-import uk.gov.companieshouse.monitorsubscription.matcher.model.MonitorFiling;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
 import uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingSerializer;
 
 public class TestUtils {

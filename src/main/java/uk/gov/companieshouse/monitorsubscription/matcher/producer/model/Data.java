@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.monitorsubscription.matcher.model;
+package uk.gov.companieshouse.monitorsubscription.matcher.producer.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -12,9 +12,13 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "type",
-        "transaction_id",
         "description",
         "description_values",
+        "links",
+        "category",
+        "paper_filed",
+        "subcategory",
+        "action_date",
         "date"
 })
 public class Data {
@@ -22,27 +26,32 @@ public class Data {
     @JsonProperty("type")
     private String type;
 
-    @JsonProperty("transaction_id")
-    private String transactionId;
-
     @JsonProperty("description")
     private String description;
 
     @JsonProperty("description_values")
     private DescriptionValues descriptionValues;
 
+    @JsonProperty("links")
+    private Links links;
+
+    @JsonProperty("category")
+    private String category;
+
+    @JsonProperty("paper_filed")
+    private Boolean paperFiled;
+
+    @JsonProperty("subcategory")
+    private String subcategory;
+
+    @JsonProperty("action_date")
+    private String actionDate;
+
     @JsonProperty("date")
     private String date;
 
     @JsonIgnore
-    private final Map<String, Object> additionalProperties = new LinkedHashMap<>();
-
-    /**
-     * No args constructor for use in serialization
-     */
-    public Data() {
-        super();
-    }
+    private final Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
     @JsonProperty("type")
     public String getType() {
@@ -52,16 +61,6 @@ public class Data {
     @JsonProperty("type")
     public void setType(String type) {
         this.type = type;
-    }
-
-    @JsonProperty("transaction_id")
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    @JsonProperty("transaction_id")
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
     }
 
     @JsonProperty("description")
@@ -84,6 +83,56 @@ public class Data {
         this.descriptionValues = descriptionValues;
     }
 
+    @JsonProperty("links")
+    public Links getLinks() {
+        return links;
+    }
+
+    @JsonProperty("links")
+    public void setLinks(Links links) {
+        this.links = links;
+    }
+
+    @JsonProperty("category")
+    public String getCategory() {
+        return category;
+    }
+
+    @JsonProperty("category")
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    @JsonProperty("paper_filed")
+    public Boolean getPaperFiled() {
+        return paperFiled;
+    }
+
+    @JsonProperty("paper_filed")
+    public void setPaperFiled(Boolean paperFiled) {
+        this.paperFiled = paperFiled;
+    }
+
+    @JsonProperty("subcategory")
+    public String getSubcategory() {
+        return subcategory;
+    }
+
+    @JsonProperty("subcategory")
+    public void setSubcategory(String subcategory) {
+        this.subcategory = subcategory;
+    }
+
+    @JsonProperty("action_date")
+    public String getActionDate() {
+        return actionDate;
+    }
+
+    @JsonProperty("action_date")
+    public void setActionDate(String actionDate) {
+        this.actionDate = actionDate;
+    }
+
     @JsonProperty("date")
     public String getDate() {
         return date;
@@ -104,15 +153,4 @@ public class Data {
         this.additionalProperties.put(name, value);
     }
 
-    @Override
-    public String toString() {
-        return "Data{" +
-                "type='" + type + '\'' +
-                ", transactionId='" + transactionId + '\'' +
-                ", description='" + description + '\'' +
-                ", descriptionValues=" + descriptionValues +
-                ", date='" + date + '\'' +
-                ", additionalProperties=" + additionalProperties +
-                '}';
-    }
 }

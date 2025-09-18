@@ -14,7 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.monitorsubscription.matcher.model.MonitorFiling;
+import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
+import uk.gov.companieshouse.monitorsubscription.matcher.producer.NotificationMatchProducer;
 import uk.gov.companieshouse.monitorsubscription.matcher.repository.MonitorRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,13 +25,16 @@ public class MatcherServiceTest {
     MonitorRepository repository;
 
     @Mock
+    NotificationMatchProducer producer;
+
+    @Mock
     Logger logger;
 
     MatcherService underTest;
 
     @BeforeEach
     public void setUp() {
-        underTest = new MatcherService(repository, logger);
+        underTest = new MatcherService(repository, producer, logger);
     }
 
     @Test

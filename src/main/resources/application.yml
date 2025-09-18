@@ -12,6 +12,10 @@ spring:
         max-attempts: ${MAX_ATTEMPTS:5}
         backoff-delay: ${BACKOFF_DELAY:1000}
         concurrency: ${CONCURRENT_LISTENER_INSTANCES:1}
+    producer:
+      notify:
+        topic: ${MATCHER_TOPIC:notification-match}
+
 
   data:
     mongodb:
