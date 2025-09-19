@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.producer;
 
 import monitor.filing;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.logging.Logger;
@@ -12,12 +13,12 @@ import uk.gov.companieshouse.monitorsubscription.matcher.producer.model.Notifica
 public class NotificationMatchProducer {
 
     private final NotificationMatchProducerProperties properties;
-    private final KafkaTemplate<String, filing> template;
+    private final KafkaTemplate<String, Object> template;
     private final NotificationMatchConverter converter;
     private final Logger logger;
 
     public NotificationMatchProducer(NotificationMatchProducerProperties properties,
-            KafkaTemplate<String, filing> template,
+            KafkaTemplate<String, Object> template,
             NotificationMatchConverter converter,
             Logger logger) {
         this.properties = properties;

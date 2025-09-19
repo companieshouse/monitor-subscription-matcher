@@ -15,11 +15,13 @@ import org.springframework.kafka.core.KafkaTemplate;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.config.properties.MonitorFilingConsumerProperties;
+import uk.gov.companieshouse.monitorsubscription.matcher.config.properties.NotificationMatchProducerProperties;
 
 @ExtendWith(MockitoExtension.class)
 public class KafkaConfigTest {
 
     private MonitorFilingConsumerProperties monitorFilingProperties;
+    private NotificationMatchProducerProperties notificationMatchProperties;
     private KafkaConfig underTest;
 
     @BeforeEach
@@ -31,21 +33,27 @@ public class KafkaConfigTest {
         monitorFilingProperties.setMaxAttempts(3);
         monitorFilingProperties.setBackOffDelay(1000L);
 
+        notificationMatchProperties = new NotificationMatchProducerProperties();
+        notificationMatchProperties.setTopic("producer-topic");
+
         String bootstrapServers = "localhost:9092";
         Logger logger = LoggerFactory.getLogger("test-logger");
 
-        underTest = new KafkaConfig(monitorFilingProperties, bootstrapServers, logger);
+        underTest = new KafkaConfig(monitorFilingProperties, notificationMatchProperties, bootstrapServers, logger);
     }
 
     @Test
     public void givenKafkaConfigProperties_whenLoaded_thenValuesAreSet() {
         assertThat(monitorFilingProperties, is(notNullValue()));
+        assertThat(notificationMatchProperties, is(notNullValue()));
 
         assertThat(monitorFilingProperties.getTopic(), is("test-topic"));
         assertThat(monitorFilingProperties.getGroupId(), is("test-group"));
         assertThat(monitorFilingProperties.getConcurrency(), is(1));
         assertThat(monitorFilingProperties.getMaxAttempts(), is(3));
         assertThat(monitorFilingProperties.getBackOffDelay(), is(1000L));
+
+        assertThat(notificationMatchProperties.getTopic(), is("producer-topic"));
     }
 
     @Test

@@ -6,7 +6,7 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-#      value-deserializer: uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingDeserializer
+      value-deserializer: uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingDeserializer
       auto-offset-reset: earliest
       filing:
         topic: test-topic
@@ -15,7 +15,7 @@ spring:
         backoff-delay: 1000
         concurrency: 1
     producer:
-#      value-serializer: uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingSerializer
+      value-serializer: uk.gov.companieshouse.monitorsubscription.matcher.serdes.GenericSerializer
       notify:
         topic: producer-topic
 

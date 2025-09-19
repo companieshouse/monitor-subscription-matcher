@@ -30,7 +30,7 @@ import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingC
 public class KafkaIntegrationTest {
 
     @Autowired
-    private KafkaTemplate<String, transaction> kafkaTemplate;
+    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private MonitorFilingConsumer consumer;
