@@ -3,7 +3,7 @@ package uk.gov.companieshouse.monitorsubscription.matcher.integration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
@@ -48,7 +47,7 @@ public class KafkaIntegrationTest {
 
     @Test
     void testMessageIsConsumed() throws IOException, InterruptedException {
-        transaction message = buildUpdateMessage().getPayload();
+        transaction message = buildTransactionUpdateMessage().getPayload();
 
         kafkaTemplate.send("test-topic", message);
 

@@ -13,7 +13,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
 
-public class TestUtils {
+public class MonitorFilingTestUtils {
 
     public static final String ID = "654321";
     public static final String COMPANY_NUMBER = "00006400";
@@ -22,7 +22,6 @@ public class TestUtils {
     public static final LocalDateTime UPDATED_DATE = CREATED_DATE.plusDays(1);
     public static final String QUERY = "QUERY transaction WHERE company_number=\"%s\"".formatted(COMPANY_NUMBER);
     public static final String USER_ID = "";
-
 
     public static final String MONITOR_FILING_UPDATE_MESSAGE = """
             {
@@ -106,7 +105,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static Message<transaction> buildUpdateMessage() throws IOException {
+    public static Message<transaction> buildTransactionUpdateMessage() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         MonitorFiling model = mapper.readValue(MONITOR_FILING_UPDATE_MESSAGE, MonitorFiling.class);
 
@@ -119,7 +118,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static Message<transaction> buildDeleteMessage() throws IOException {
+    public static Message<transaction> buildTransactionDeleteMessage() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         MonitorFiling model = mapper.readValue(MONITOR_FILING_DELETE_MESSAGE, MonitorFiling.class);
 
@@ -132,7 +131,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static Message<transaction> buildDeleteMessageWithIgnoredFields() throws IOException {
+    public static Message<transaction> buildTransactionDeleteMessageWithIgnoredFields() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         MonitorFiling model = mapper.readValue(MONITOR_FILING_DELETE_MESSAGE_WITH_IGNORED_FIELDS, MonitorFiling.class);
 
@@ -145,8 +144,7 @@ public class TestUtils {
                 .build();
     }
 
-
-    public static Message<transaction> buildInvalidMessage() {
+    public static Message<transaction> buildTransactionInvalidMessage() {
         String dataString = "This is NOT valid JSON data";
 
         return MessageBuilder
@@ -156,7 +154,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static Message<transaction> buildEmptyDataMessage() {
+    public static Message<transaction> buildTransactionEmptyDataMessage() {
         String dataString = "";
 
         return MessageBuilder
@@ -166,7 +164,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static Message<transaction> buildMessageWithExceptionCauseHeader() {
+    public static Message<transaction> buildTransactionMessageWithExceptionCauseHeader() {
         String dataString = "";
 
         return MessageBuilder
@@ -178,8 +176,8 @@ public class TestUtils {
     }
 
 
-    public static byte[] buildRawAvroMessage() throws IOException {
-        return new AvroSerializer().serialize("test-topic", buildUpdateMessage().getPayload());
+    public static byte[] buildTransactionRawAvroMessage() throws IOException {
+        return new AvroSerializer().serialize("test-topic", buildTransactionUpdateMessage().getPayload());
     }
 
     public static MonitorFiling buildMonitorFilingFromUpdateMessage() throws IOException {

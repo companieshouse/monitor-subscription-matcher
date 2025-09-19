@@ -6,11 +6,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildDeleteMessage;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildDeleteMessageWithIgnoredFields;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildEmptyDataMessage;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildInvalidMessage;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionDeleteMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionDeleteMessageWithIgnoredFields;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionEmptyDataMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionInvalidMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 
 import java.io.IOException;
 import monitor.transaction;
@@ -33,7 +33,7 @@ public class MonitorFilingConverterTest {
 
     @Test
     public void givenValidUpdatePayload_whenConverted_thenMonitorFilingCreated() throws IOException {
-        transaction transaction = buildUpdateMessage().getPayload();
+        transaction transaction = buildTransactionUpdateMessage().getPayload();
 
         MonitorFiling result = underTest.convert(transaction);
 
@@ -50,7 +50,7 @@ public class MonitorFilingConverterTest {
 
     @Test
     public void givenValidDeletePayload_whenConverted_thenMonitorFilingCreated() throws IOException {
-        transaction transaction = buildDeleteMessage().getPayload();
+        transaction transaction = buildTransactionDeleteMessage().getPayload();
 
         MonitorFiling result = underTest.convert(transaction);
 
@@ -67,7 +67,7 @@ public class MonitorFilingConverterTest {
 
     @Test
     public void givenValidDeletePayload_whenConverted_thenVerifyNoExtraPropertiesProvided() throws IOException {
-        transaction transaction = buildDeleteMessageWithIgnoredFields().getPayload();
+        transaction transaction = buildTransactionDeleteMessageWithIgnoredFields().getPayload();
 
         MonitorFiling result = underTest.convert(transaction);
 
@@ -90,7 +90,7 @@ public class MonitorFilingConverterTest {
 
     @Test
     public void givenEmptyDataPayload_whenConverted_thenMonitorFilingCreated() throws IOException {
-        transaction transaction = buildEmptyDataMessage().getPayload();
+        transaction transaction = buildTransactionEmptyDataMessage().getPayload();
 
         MonitorFiling result = underTest.convert(transaction);
 
@@ -105,7 +105,7 @@ public class MonitorFilingConverterTest {
 
     @Test
     public void givenInvalidPayload_whenConverted_thenMonitorFilingCreated() throws IOException {
-        transaction transaction = buildInvalidMessage().getPayload();
+        transaction transaction = buildTransactionInvalidMessage().getPayload();
 
         NonRetryableException expectedException = assertThrows(NonRetryableException.class, () -> {
             underTest.convert(transaction);

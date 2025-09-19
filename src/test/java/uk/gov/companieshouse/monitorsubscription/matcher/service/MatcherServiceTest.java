@@ -4,7 +4,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildMonitorFilingFromUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildMonitorFilingFromUpdateMessage;
 
 import java.io.IOException;
 import java.util.Collections;

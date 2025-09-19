@@ -8,8 +8,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildDeleteMessage;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionDeleteMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 
 import java.io.IOException;
 import monitor.transaction;
@@ -57,7 +57,7 @@ public class MonitorFilingConsumerTest {
     @Test
     @DisplayName("Given a valid update message, when consumed, then message is successful")
     void givenValidUpdateMessage_whenConsumed_thenMessageSuccessful() throws IOException {
-        Message<transaction> transactionMessage = buildUpdateMessage();
+        Message<transaction> transactionMessage = buildTransactionUpdateMessage();
         MonitorFiling filingMessage = new MonitorFilingConverter().convert(transactionMessage.getPayload());
 
         when(converter.convert(transactionMessage.getPayload())).thenReturn(filingMessage);
@@ -72,7 +72,7 @@ public class MonitorFilingConsumerTest {
     @Test
     @DisplayName("Given a valid delete message, when consumed, then message is successful")
     void givenValidDeleteMessage_whenConsumed_thenMessageSuccessful() throws IOException {
-        Message<transaction> transactionMessage = buildDeleteMessage();
+        Message<transaction> transactionMessage = buildTransactionDeleteMessage();
         MonitorFiling filingMessage = new MonitorFilingConverter().convert(transactionMessage.getPayload());
 
         when(converter.convert(transactionMessage.getPayload())).thenReturn(filingMessage);
@@ -87,7 +87,7 @@ public class MonitorFilingConsumerTest {
     @Test
     @DisplayName("Given an invalid JSON payload, when consumed, then non-retryable exception is thrown")
     void givenInvalidMessage_whenConsumed_thenRaiseNonRetryableException() throws IOException {
-        Message<transaction> transactionMessage = buildDeleteMessage();
+        Message<transaction> transactionMessage = buildTransactionDeleteMessage();
         when(converter.convert(transactionMessage.getPayload())).thenThrow(new NonRetryableException("test exception"));
 
         NonRetryableException expectedException = assertThrows(NonRetryableException.class, () -> {
@@ -105,7 +105,7 @@ public class MonitorFilingConsumerTest {
     @Test
     @DisplayName("Given an invalid JSON payload, when consumed, then retryable exception is thrown")
     void givenInvalidMessage_whenConsumed_thenRaiseRetryableException() throws IOException {
-        Message<transaction> transactionMessage = buildDeleteMessage();
+        Message<transaction> transactionMessage = buildTransactionDeleteMessage();
         when(converter.convert(transactionMessage.getPayload())).thenThrow(new RetryableException("test exception", new IOException()));
 
         RetryableException expectedException = assertThrows(RetryableException.class, () -> {

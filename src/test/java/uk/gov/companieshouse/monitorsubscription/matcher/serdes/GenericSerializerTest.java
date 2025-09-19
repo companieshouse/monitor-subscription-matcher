@@ -6,10 +6,12 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.NotificationMatchTestUtils.buildFilingUpdateMessage;
 
 import consumer.exception.NonRetryableErrorException;
 import java.io.IOException;
+import monitor.filing;
 import monitor.transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,12 +30,22 @@ public class GenericSerializerTest {
 
     @Test
     public void givenTransactionPayload_whenSerialized_thenByteArrayCreated() throws IOException {
-        transaction payload = buildUpdateMessage().getPayload();
+        transaction payload = buildTransactionUpdateMessage().getPayload();
 
         byte[] result = underTest.serialize("test-topic", payload);
 
         assertThat(result, is(notNullValue()));
         assertThat(result.length, is(325));
+    }
+
+    @Test
+    public void givenFilingPayload_whenSerialized_thenByteArrayCreated() throws IOException {
+        filing payload = buildFilingUpdateMessage().getPayload();
+
+        byte[] result = underTest.serialize("test-topic", payload);
+
+        assertThat(result, is(notNullValue()));
+        assertThat(result.length, is(539));
     }
 
     @Test

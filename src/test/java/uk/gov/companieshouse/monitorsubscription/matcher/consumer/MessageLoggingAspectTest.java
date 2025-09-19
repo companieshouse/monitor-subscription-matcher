@@ -1,7 +1,7 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.consumer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 
 import java.io.IOException;
 import monitor.transaction;
@@ -26,7 +26,7 @@ class MessageLoggingAspectTest {
 
     @Test
     void testAspectLogging(CapturedOutput output) throws IOException {
-        Message<transaction> message = buildUpdateMessage();
+        Message<transaction> message = buildTransactionUpdateMessage();
 
         consumer.consume(message);
 

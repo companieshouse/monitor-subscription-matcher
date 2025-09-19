@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQCN;
 import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_STACKTRACE;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 
 import consumer.exception.NonRetryableErrorException;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class RetryableTopicErrorInterceptorTest {
     void givenKafkaTopic_whenOnSend_thenReturnOriginalRecord() throws IOException {
         underTest.configure(Map.of());
 
-        Message<transaction> transactionMessage = buildUpdateMessage();
+        Message<transaction> transactionMessage = buildTransactionUpdateMessage();
         ProducerRecord<String, Object> onSendRecord = new ProducerRecord<>("test-topic", "test-key", transactionMessage.getPayload());
 
         ProducerRecord<String, Object> result = underTest.onSend(onSendRecord);
@@ -56,7 +56,7 @@ public class RetryableTopicErrorInterceptorTest {
     void givenErrorTopic_whenOnSend_thenReturnOriginalRecord() throws IOException {
         underTest.configure(Map.of());
 
-        Message<transaction> transactionMessage = buildUpdateMessage();
+        Message<transaction> transactionMessage = buildTransactionUpdateMessage();
         ProducerRecord<String, Object> onSendRecord = new ProducerRecord<>("test-topic-error", "test-key", transactionMessage.getPayload());
 
         ProducerRecord<String, Object> result = underTest.onSend(onSendRecord);
@@ -76,7 +76,7 @@ public class RetryableTopicErrorInterceptorTest {
     void givenValidExceptionCauseHeader_whenOnSend_thenReturnInvalidRecord() throws IOException {
         underTest.configure(Map.of());
 
-        Message<transaction> transactionMessage = buildUpdateMessage();
+        Message<transaction> transactionMessage = buildTransactionUpdateMessage();
 
         List<Header> headers = List.of(
                 new RecordHeader(EXCEPTION_CAUSE_FQCN, NonRetryableErrorException.class.getName().getBytes())
@@ -102,7 +102,7 @@ public class RetryableTopicErrorInterceptorTest {
     void givenInvalidExceptionCauseHeader_whenOnSend_thenReturnInvalidRecord() throws IOException {
         underTest.configure(Map.of());
 
-        Message<transaction> transactionMessage = buildUpdateMessage();
+        Message<transaction> transactionMessage = buildTransactionUpdateMessage();
 
         List<Header> headers = List.of(
                 new RecordHeader(EXCEPTION_CAUSE_FQCN, NonRetryableException.class.getName().getBytes())
@@ -128,7 +128,7 @@ public class RetryableTopicErrorInterceptorTest {
     void givenValidExceptionStacktraceHeader_whenOnSend_thenReturnInvalidRecord() throws IOException {
         underTest.configure(Map.of());
 
-        Message<transaction> transactionMessage = buildUpdateMessage();
+        Message<transaction> transactionMessage = buildTransactionUpdateMessage();
 
         List<Header> headers = List.of(
                 new RecordHeader(EXCEPTION_STACKTRACE, NonRetryableErrorException.class.getName().getBytes())
@@ -154,7 +154,7 @@ public class RetryableTopicErrorInterceptorTest {
     void givenInvalidExceptionStacktraceHeader_whenOnSend_thenReturnInvalidRecord() throws IOException {
         underTest.configure(Map.of());
 
-        Message<transaction> transactionMessage = buildUpdateMessage();
+        Message<transaction> transactionMessage = buildTransactionUpdateMessage();
 
         List<Header> headers = List.of(
                 new RecordHeader(EXCEPTION_STACKTRACE, NonRetryableException.class.getName().getBytes())

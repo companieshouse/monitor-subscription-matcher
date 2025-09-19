@@ -11,15 +11,21 @@ import uk.gov.companieshouse.monitorsubscription.matcher.producer.model.Notifica
 @Component
 public class NotificationMatchConverter implements Converter<NotificationMatch, filing> {
 
+    private final ObjectMapper objectMapper;
+
+    public NotificationMatchConverter(final ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Override
     public filing convert(final NotificationMatch source) {
         try {
-            String notificationData = new ObjectMapper().writeValueAsString(source.getData());
+            String notificationData = objectMapper.writeValueAsString(source.getData());
 
             return filing.newBuilder()
                     .setData(notificationData)
-                    .setKind("email")
-                    .setNotifiedAt(String.valueOf(System.currentTimeMillis()))
+                    .setKind(source.getKind())
+                    .setNotifiedAt(source.getNotifiedAt())
                     .setUserId(source.getUserId())
                     .build();
 
