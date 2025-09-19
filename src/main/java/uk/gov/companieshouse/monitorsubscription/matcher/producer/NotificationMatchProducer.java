@@ -30,10 +30,10 @@ public class NotificationMatchProducer {
         logger.trace("sendMessage(message=%s) method called.".formatted(message));
 
         // Convert the message to the required format before sending
-        filing filing = converter.convert(message);
+//        filing filing = converter.convert(message);
 
         // Send the converted message to the Kafka topic
-        template.send(properties.getTopic(), filing);
+//        template.send(properties.getTopic(), filing);
     }
 
 }

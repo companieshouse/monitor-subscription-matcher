@@ -50,7 +50,7 @@ public class KafkaConfigTest {
 
     @Test
     public void givenConfigProvider_whenKafkaTemplateCreated_thenNoErrorsAreRaised() {
-        KafkaTemplate<String, transaction> result = underTest.kafkaMonitorFilingTemplate();
+        KafkaTemplate<String, Object> result = underTest.kafkaTemplate();
 
         assertThat(result, is(notNullValue()));
     }

@@ -4,6 +4,7 @@ import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQC
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import consumer.exception.NonRetryableErrorException;
+import consumer.serialization.AvroSerializer;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import monitor.transaction;
@@ -11,7 +12,6 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
-import uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingSerializer;
 
 public class TestUtils {
 
@@ -179,7 +179,7 @@ public class TestUtils {
 
 
     public static byte[] buildRawAvroMessage() throws IOException {
-        return new MonitorFilingSerializer().serialize("test-topic", buildUpdateMessage().getPayload());
+        return new AvroSerializer().serialize("test-topic", buildUpdateMessage().getPayload());
     }
 
     public static MonitorFiling buildMonitorFilingFromUpdateMessage() throws IOException {

@@ -59,7 +59,7 @@ public class MonitorFilingConsumer {
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             include = RetryableException.class,
-            kafkaTemplate = "kafkaMonitorFilingTemplate"
+            kafkaTemplate = "kafkaTemplate"
     )
     public void consume(final Message<transaction> message) {
         logger.debug("consume(message=%s) method called.".formatted(message));
