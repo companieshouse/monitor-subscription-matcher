@@ -9,7 +9,7 @@ import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFili
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.ID;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.QUERY;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.UPDATED_DATE;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.USER_ID;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.NotificationMatchTestUtils.USER_ID;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;

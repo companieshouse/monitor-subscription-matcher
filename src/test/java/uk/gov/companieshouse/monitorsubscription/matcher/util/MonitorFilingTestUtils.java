@@ -2,7 +2,6 @@ package uk.gov.companieshouse.monitorsubscription.matcher.util;
 
 import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQCN;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import consumer.exception.NonRetryableErrorException;
 import consumer.serialization.AvroSerializer;
 import java.io.IOException;
@@ -11,7 +10,6 @@ import monitor.transaction;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
 
 public class MonitorFilingTestUtils {
 
@@ -21,7 +19,8 @@ public class MonitorFilingTestUtils {
     public static final Boolean ACTIVE = Boolean.TRUE;
     public static final LocalDateTime UPDATED_DATE = CREATED_DATE.plusDays(1);
     public static final String QUERY = "QUERY transaction WHERE company_number=\"%s\"".formatted(COMPANY_NUMBER);
-    public static final String USER_ID = "";
+    public static final String PUBLISHED_AT = "2025-03-03T15:04:03";
+    public static final String TRANSACTION_ID = "158153-915517-386847";
 
     public static final String MONITOR_FILING_UPDATE_MESSAGE = """
             {
@@ -54,6 +53,28 @@ public class MonitorFilingTestUtils {
                 "data": {
                   "type": "AP01",
                   "transaction_id": "158153-915517-386847",
+                  "description" : "appoint-person-director-company-with-name-date",
+                  "description_values" : {
+                    "appointment_date" : "1 December 2024",
+                    "officer_name" : "DR AMIDAT DUPE IYIOLA"
+                  },
+                  "date": "2025-02-04"
+                },
+                "is_delete": true
+              },
+              "published_at": "2025-03-03T15:04:03",
+              "version": "0",
+              "offset": "2121212121"
+            }
+            """;
+
+    public static final String MONITOR_FILING_DELETE_MESSAGE_WITHOUT_TRANSACTION_ID = """
+            {
+              "company_number": "00006400",
+              "data": {
+                "company_number": "00006400",
+                "data": {
+                  "type": "AP01",
                   "description" : "appoint-person-director-company-with-name-date",
                   "description_values" : {
                     "appointment_date" : "1 December 2024",
@@ -105,40 +126,33 @@ public class MonitorFilingTestUtils {
                 .build();
     }
 
-    public static Message<transaction> buildTransactionUpdateMessage() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        MonitorFiling model = mapper.readValue(MONITOR_FILING_UPDATE_MESSAGE, MonitorFiling.class);
-
-        String dataString = mapper.writeValueAsString(model.getData());
-
+    public static Message<transaction> buildTransactionUpdateMessage() {
         return MessageBuilder
-                .withPayload(buildTransactionWithData(dataString))
+                .withPayload(buildTransactionWithData(MONITOR_FILING_UPDATE_MESSAGE))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
     }
 
-    public static Message<transaction> buildTransactionDeleteMessage() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        MonitorFiling model = mapper.readValue(MONITOR_FILING_DELETE_MESSAGE, MonitorFiling.class);
-
-        String dataString = mapper.writeValueAsString(model.getData());
-
+    public static Message<transaction> buildTransactionDeleteMessage() {
         return MessageBuilder
-                .withPayload(buildTransactionWithData(dataString))
+                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_MESSAGE))
+                .setHeader("kafka_receivedTopic", "test-topic")
+                .setHeader("kafka_offset", 42L)  // optional
+                .build();
+    }
+
+    public static Message<transaction> buildTransactionDeleteMessageWithoutTransactionID() {
+        return MessageBuilder
+                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_MESSAGE_WITHOUT_TRANSACTION_ID))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
     }
 
     public static Message<transaction> buildTransactionDeleteMessageWithIgnoredFields() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        MonitorFiling model = mapper.readValue(MONITOR_FILING_DELETE_MESSAGE_WITH_IGNORED_FIELDS, MonitorFiling.class);
-
-        String dataString = mapper.writeValueAsString(model.getData());
-
         return MessageBuilder
-                .withPayload(buildTransactionWithData(dataString))
+                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_MESSAGE_WITH_IGNORED_FIELDS))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
@@ -176,11 +190,8 @@ public class MonitorFilingTestUtils {
     }
 
 
-    public static byte[] buildTransactionRawAvroMessage() throws IOException {
+    public static byte[] buildTransactionRawAvroMessage() {
         return new AvroSerializer().serialize("test-topic", buildTransactionUpdateMessage().getPayload());
     }
 
-    public static MonitorFiling buildMonitorFilingFromUpdateMessage() throws IOException {
-        return new ObjectMapper().readValue(MONITOR_FILING_UPDATE_MESSAGE, MonitorFiling.class);
-    }
 }

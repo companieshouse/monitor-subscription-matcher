@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.messaging.Message;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingConsumer;
 
@@ -47,9 +48,9 @@ public class KafkaIntegrationTest {
 
     @Test
     void testMessageIsConsumed() throws IOException, InterruptedException {
-        transaction message = buildTransactionUpdateMessage().getPayload();
+        Message<transaction> message = buildTransactionUpdateMessage();
 
-        kafkaTemplate.send("test-topic", message);
+        kafkaTemplate.send("test-topic", message.getPayload());
 
         boolean messageConsumed = latch.await(10, TimeUnit.SECONDS);
 
@@ -57,8 +58,7 @@ public class KafkaIntegrationTest {
 
         assertTrue(messageConsumed, "Message was not consumed in time");
         assertThat(423, is(expectedMessage.length()));
-        assertThat(423, is(receivedMessage.toString().length()));
 
-        assertThat(receivedMessage.toString(), is(expectedMessage));
+        assertThat(receivedMessage, is(message.getPayload()));
     }
 }

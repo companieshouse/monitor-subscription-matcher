@@ -1,13 +1,19 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Optional;
+import monitor.filing;
+import monitor.transaction;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.monitorsubscription.matcher.consumer.model.MonitorFiling;
+import uk.gov.companieshouse.monitorsubscription.matcher.converter.TransactionToFilingConverter;
+import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.producer.NotificationMatchProducer;
-import uk.gov.companieshouse.monitorsubscription.matcher.repository.model.MonitorQueryDocument;
 import uk.gov.companieshouse.monitorsubscription.matcher.repository.MonitorRepository;
+import uk.gov.companieshouse.monitorsubscription.matcher.repository.model.MonitorQueryDocument;
 
 /**
  * Default message consumer to allow the build to compile. We need at least one qualifying bean with
@@ -17,41 +23,52 @@ import uk.gov.companieshouse.monitorsubscription.matcher.repository.MonitorRepos
 public class MatcherService {
 
     private final MonitorRepository repository;
+    private final ObjectMapper mapper;
     private final NotificationMatchProducer producer;
     private final Logger logger;
 
-    public MatcherService(MonitorRepository repository, NotificationMatchProducer producer, Logger logger) {
+    public MatcherService(MonitorRepository repository, ObjectMapper mapper, NotificationMatchProducer producer, Logger logger) {
         this.repository = repository;
+        this.mapper = mapper;
         this.producer = producer;
         this.logger = logger;
     }
 
-    public void processMessage(final MonitorFiling message) {
+    public void processMessage(final transaction message) {
         logger.trace("processMessage(message=%s) method called.".formatted(message));
 
-        // Processing to be added here for matching...
+        Optional<String> transactionId = getTransactionId(message);
+        if(transactionId.isEmpty()) {
+            logger.debug("Delete non-existent filing for company: [%s] received - attempting to match users".
+                    formatted(message.getCompanyNumber()));
+        } else {
+            logger.debug("Received transaction for company: [%s], transaction id: [%s] - attempting to match users".
+                    formatted(message.getCompanyNumber(), transactionId.get()));
+        }
+
+        // Query the repository for matching companies.
         List<MonitorQueryDocument> companies = repository.findByCompanyNumber(message.getCompanyNumber());
         logger.debug("Found %d matching companies".formatted(companies.size()));
 
-        if(companies.isEmpty()) {
-            //logger.debug("No matching companies found, no more processing required...");
-            return;
-        }
+        // Process each query document and prepare messages for the producer.
+        companies.stream().map(MonitorQueryDocument::getUserId).forEach(userId -> {
+            filing payload = new TransactionToFilingConverter().apply(message, userId);
 
-        // Finally, send a message to the target topic.
-        producer.sendMessage(null);
-
-        //logger.debug("Message sent to Notification Match topic.");
+            producer.sendMessage(payload);
+        });
     }
 
-    private Optional<String> getTransactionId(final MonitorFiling message) {
+    private Optional<String> getTransactionId(final transaction message) {
         logger.trace("getTransactionId() method called.");
+        try {
+            JsonNode root = mapper.readTree(message.getData());
+            JsonNode transactionNode = root.get("data").get("data").get("transaction_id");
 
-        if (message.getData() == null || message.getData().getData() == null || message.getData().getData().getTransactionId().isEmpty()) {
-            logger.debug("Warning: No Transaction ID was identified within the given message!");
-            return Optional.empty();
+            return Optional.ofNullable(transactionNode).map(JsonNode::asText);
+
+        } catch (JsonProcessingException e) {
+            logger.error("An error occurred while attempting to extract the TransactionID:", e);
+            throw new NonRetryableException("Error extracting transaction ID from message", e);
         }
-
-        return Optional.of(message.getData().getData().getTransactionId());
     }
 }
