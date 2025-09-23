@@ -62,7 +62,8 @@ public class MatcherService {
         logger.trace("getTransactionId() method called.");
         try {
             JsonNode root = mapper.readTree(message.getData());
-            JsonNode transactionNode = root.get("data").get("data").get("transaction_id");
+            JsonNode data = root.get("data");
+            JsonNode transactionNode = data.get("transaction_id");
 
             return Optional.ofNullable(transactionNode).map(JsonNode::asText);
 

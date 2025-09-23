@@ -35,7 +35,7 @@ public class GenericSerializerTest {
         byte[] result = underTest.serialize("test-topic", payload);
 
         assertThat(result, is(notNullValue()));
-        assertThat(result.length, is(554));
+        assertThat(result.length, is(421));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class GenericSerializerTest {
         byte[] result = underTest.serialize("test-topic", payload);
 
         assertThat(result, is(notNullValue()));
-        assertThat(result.length, is(805));
+        assertThat(result.length, is(692));
     }
 
     @Test

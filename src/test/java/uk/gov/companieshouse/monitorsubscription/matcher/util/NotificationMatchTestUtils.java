@@ -1,7 +1,5 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import monitor.filing;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -12,9 +10,8 @@ public class NotificationMatchTestUtils {
     public static final String NOTIFIED_AT = "1453896192000";
     public static final String USER_ID = "1vKD26OwehmZI6MpGz9D02-dmCI";
 
-    public static final String NOTIFICATION_MATCH_UPDATE_MESSAGE = """
+    private static final String NOTIFICATION_MATCH_UPDATE_DATA = """
             {
-              "data": {
                 "app_id": "chs-monitor-notification-matcher.filing",
                 "company_number": "00006400",
                 "data": {
@@ -34,16 +31,11 @@ public class NotificationMatchTestUtils {
                   "date": "2025-02-04"
                 },
                 "is_delete": false
-              },
-              "kind": "email",
-              "notified_at": "1453896192000",
-              "user_id": "1vKD26OwehmZI6MpGz9D02-dmCI"
             }
             """;
 
-    public static final String NOTIFICATION_MATCH_DELETE_MESSAGE = """
+    private static final String NOTIFICATION_MATCH_DELETE_DATA = """
             {
-              "data": {
                 "app_id": "chs-monitor-notification-matcher.filing",
                 "company_number": "00006400",
                 "data": {
@@ -63,10 +55,6 @@ public class NotificationMatchTestUtils {
                   "date": "2025-02-04"
                 },
                 "is_delete": true
-              },
-              "kind": "email",
-              "notified_at": "1453896192000",
-              "user_id": "1vKD26OwehmZI6MpGz9D02-dmCI"
             }
             """;
 
@@ -81,7 +69,7 @@ public class NotificationMatchTestUtils {
 
     public static Message<filing> buildFilingUpdateMessage() {
         return MessageBuilder
-                .withPayload(buildFilingWithData(NOTIFICATION_MATCH_UPDATE_MESSAGE))
+                .withPayload(buildFilingWithData(NOTIFICATION_MATCH_UPDATE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
@@ -90,7 +78,7 @@ public class NotificationMatchTestUtils {
 
     public static Message<filing> buildFilingDeleteMessage() {
         return MessageBuilder
-                .withPayload(buildFilingWithData(NOTIFICATION_MATCH_DELETE_MESSAGE))
+                .withPayload(buildFilingWithData(NOTIFICATION_MATCH_DELETE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();

@@ -21,11 +21,10 @@ public class MonitorFilingTestUtils {
     public static final String QUERY = "QUERY transaction WHERE company_number=\"%s\"".formatted(COMPANY_NUMBER);
     public static final String PUBLISHED_AT = "2025-03-03T15:04:03";
     public static final String TRANSACTION_ID = "158153-915517-386847";
+    public static final String VERSION = "0";
 
-    public static final String MONITOR_FILING_UPDATE_MESSAGE = """
+    private static final String MONITOR_FILING_UPDATE_DATA = """
             {
-              "company_number": "00006400",
-              "data": {
                 "company_number": "00006400",
                 "data": {
                   "type": "AP01",
@@ -38,17 +37,11 @@ public class MonitorFilingTestUtils {
                   "date": "2025-02-04"
                 },
                 "is_delete": false
-              },
-              "published_at": "2025-03-03T15:04:03",
-              "version": "0",
-              "offset": "2121212121"
             }
             """;
 
-    public static final String MONITOR_FILING_DELETE_MESSAGE = """
+    private static final String MONITOR_FILING_DELETE_DATA = """
             {
-              "company_number": "00006400",
-              "data": {
                 "company_number": "00006400",
                 "data": {
                   "type": "AP01",
@@ -61,17 +54,11 @@ public class MonitorFilingTestUtils {
                   "date": "2025-02-04"
                 },
                 "is_delete": true
-              },
-              "published_at": "2025-03-03T15:04:03",
-              "version": "0",
-              "offset": "2121212121"
             }
             """;
 
-    public static final String MONITOR_FILING_DELETE_MESSAGE_WITHOUT_TRANSACTION_ID = """
+    private static final String MONITOR_FILING_DELETE_DATA_WITHOUT_TRANSACTION_ID = """
             {
-              "company_number": "00006400",
-              "data": {
                 "company_number": "00006400",
                 "data": {
                   "type": "AP01",
@@ -83,17 +70,11 @@ public class MonitorFilingTestUtils {
                   "date": "2025-02-04"
                 },
                 "is_delete": true
-              },
-              "published_at": "2025-03-03T15:04:03",
-              "version": "0",
-              "offset": "2121212121"
             }
             """;
 
-    public static final String MONITOR_FILING_DELETE_MESSAGE_WITH_IGNORED_FIELDS = """
+    private static final String MONITOR_FILING_DELETE_DATA_WITH_IGNORED_FIELDS = """
             {
-              "company_number": "00006400",
-              "data": {
                 "company_number": "00006400",
                 "data": {
                   "type": "AP01",
@@ -109,26 +90,21 @@ public class MonitorFilingTestUtils {
                 },
                 "is_delete": true,
                 "extra_field_2": "This field should also be ignored"
-              },
-              "published_at": "2025-03-03T15:04:03",
-              "version": "0",
-              "offset": "2121212121",
-              "extra_field_1": "This field should also be ignored"
             }
             """;
 
     private static transaction buildTransactionWithData(final String data) {
         return transaction.newBuilder()
-                .setCompanyNumber("00006400")
+                .setCompanyNumber(COMPANY_NUMBER)
                 .setData(data)
-                .setPublishedAt("2025-03-03T15:04:03")
-                .setVersion("0")
+                .setPublishedAt(PUBLISHED_AT)
+                .setVersion(VERSION)
                 .build();
     }
 
     public static Message<transaction> buildTransactionUpdateMessage() {
         return MessageBuilder
-                .withPayload(buildTransactionWithData(MONITOR_FILING_UPDATE_MESSAGE))
+                .withPayload(buildTransactionWithData(MONITOR_FILING_UPDATE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
@@ -136,7 +112,7 @@ public class MonitorFilingTestUtils {
 
     public static Message<transaction> buildTransactionDeleteMessage() {
         return MessageBuilder
-                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_MESSAGE))
+                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
@@ -144,7 +120,7 @@ public class MonitorFilingTestUtils {
 
     public static Message<transaction> buildTransactionDeleteMessageWithoutTransactionID() {
         return MessageBuilder
-                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_MESSAGE_WITHOUT_TRANSACTION_ID))
+                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA_WITHOUT_TRANSACTION_ID))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
@@ -152,7 +128,7 @@ public class MonitorFilingTestUtils {
 
     public static Message<transaction> buildTransactionDeleteMessageWithIgnoredFields() throws IOException {
         return MessageBuilder
-                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_MESSAGE_WITH_IGNORED_FIELDS))
+                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA_WITH_IGNORED_FIELDS))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
