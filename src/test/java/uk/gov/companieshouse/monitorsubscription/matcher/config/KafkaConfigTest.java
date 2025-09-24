@@ -39,7 +39,7 @@ public class KafkaConfigTest {
         String bootstrapServers = "localhost:9092";
         Logger logger = LoggerFactory.getLogger("test-logger");
 
-        underTest = new KafkaConfig(monitorFilingProperties, notificationMatchProperties, bootstrapServers, logger);
+        underTest = new KafkaConfig(monitorFilingProperties, bootstrapServers, logger);
     }
 
     @Test

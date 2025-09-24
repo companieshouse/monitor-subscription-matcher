@@ -22,7 +22,6 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.monitorsubscription.matcher.config.properties.MonitorFilingConsumerProperties;
-import uk.gov.companieshouse.monitorsubscription.matcher.config.properties.NotificationMatchProducerProperties;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableTopicErrorInterceptor;
 import uk.gov.companieshouse.monitorsubscription.matcher.serdes.GenericSerializer;
 import uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingDeserializer;
@@ -33,7 +32,6 @@ import uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingDes
 public class KafkaConfig {
 
     private final MonitorFilingConsumerProperties monitorFilingProperties;
-    private final NotificationMatchProducerProperties notificationMatchProperties;
     private final String bootstrapServers;
     private final Logger logger;
 
@@ -41,11 +39,9 @@ public class KafkaConfig {
      * Constructor.
      */
     public KafkaConfig(MonitorFilingConsumerProperties monitorFilingProperties,
-            NotificationMatchProducerProperties notificationMatchProperties,
             @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers,
             Logger logger) {
         this.monitorFilingProperties = monitorFilingProperties;
-        this.notificationMatchProperties = notificationMatchProperties;
         this.bootstrapServers = bootstrapServers;
         this.logger = logger;
     }
