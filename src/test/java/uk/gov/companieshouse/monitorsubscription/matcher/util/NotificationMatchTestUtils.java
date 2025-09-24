@@ -1,12 +1,14 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.util;
 
+import static uk.gov.companieshouse.monitorsubscription.matcher.converter.TransactionToFilingConverter.EMAIL_KIND;
+
 import monitor.filing;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
 public class NotificationMatchTestUtils {
 
-    public static final String KIND = "email";
+    public static final String KIND = EMAIL_KIND;
     public static final String NOTIFIED_AT = "1453896192000";
     public static final String USER_ID = "1vKD26OwehmZI6MpGz9D02-dmCI";
 

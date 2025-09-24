@@ -51,8 +51,9 @@ public class MatcherService {
         logger.debug("Found %d matching companies".formatted(companies.size()));
 
         // Process each query document and prepare messages for the producer.
+        TransactionToFilingConverter converter = new TransactionToFilingConverter();
         companies.stream().map(MonitorQueryDocument::getUserId).forEach(userId -> {
-            filing payload = new TransactionToFilingConverter().apply(message, userId);
+            filing payload = converter.apply(message, userId);
 
             producer.sendMessage(payload);
         });
