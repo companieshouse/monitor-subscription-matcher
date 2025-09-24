@@ -106,9 +106,10 @@ class MatcherServiceTest {
     @Test
     void givenInvalidPayload_whenFetchingTransactionID_thenRaiseException() {
         Message<transaction> message = buildTransactionInvalidMessage();
+        transaction payload = message.getPayload();
 
         NonRetryableException expectedException = assertThrows(NonRetryableException.class, () -> {
-            underTest.processMessage(message.getPayload());
+            underTest.processMessage(payload);
         });
 
         verify(logger, times(2)).trace(anyString());
