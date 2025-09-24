@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildRawAvroMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionRawAvroMessage;
 
 import consumer.exception.NonRetryableErrorException;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class MonitorFilingDeserializerTest {
 
     @Test
     public void givenValidPayload_whenDeserialized_thenSuccessReturned() throws IOException {
-        byte[] payload = buildRawAvroMessage();
+        byte[] payload = buildTransactionRawAvroMessage();
 
         transaction result = underTest.deserialize("test-topic", payload);
 

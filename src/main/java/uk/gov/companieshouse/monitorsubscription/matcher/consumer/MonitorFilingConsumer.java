@@ -10,18 +10,15 @@ import org.springframework.messaging.Message;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.monitorsubscription.matcher.converter.MonitorFilingConverter;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
-import uk.gov.companieshouse.monitorsubscription.matcher.model.MonitorFiling;
 import uk.gov.companieshouse.monitorsubscription.matcher.service.MatcherService;
 
 @Component
 public class MonitorFilingConsumer {
 
     private final MatcherService service;
-    private final MonitorFilingConverter converter;
     private final MessageFlags messageFlags;
     private final Logger logger;
 
@@ -33,9 +30,8 @@ public class MonitorFilingConsumer {
      * @param messageFlags flags to indicate the type of message being processed.
      * @param logger the logger to use for logging.
      */
-    public MonitorFilingConsumer(MatcherService service, MonitorFilingConverter converter, MessageFlags messageFlags, Logger logger) {
+    public MonitorFilingConsumer(MatcherService service, MessageFlags messageFlags, Logger logger) {
         this.service = service;
-        this.converter = converter;
         this.messageFlags = messageFlags;
         this.logger = logger;
     }
@@ -61,7 +57,6 @@ public class MonitorFilingConsumer {
             include = RetryableException.class,
             kafkaTemplate = "kafkaTemplate"
     )
-
     public void consume(final Message<transaction> message) {
         logger.debug("consume(message=%s) method called.".formatted(message));
         try {
@@ -69,11 +64,8 @@ public class MonitorFilingConsumer {
                 callback.accept(message.getPayload());
             }
 
-            // Convert the Avro schema object to our internal model.
-            MonitorFiling monitorFiling = converter.convert(message.getPayload());
-
             // Process the message via the matcher service.
-            service.processMessage(monitorFiling);
+            service.processMessage(message.getPayload());
 
         } catch(NonRetryableException ex) {
             logger.error("Non-Retryable exception encountered processing message!", ex, DataMapHolder.getLogMap());

@@ -2,13 +2,13 @@ package uk.gov.companieshouse.monitorsubscription.matcher.repository.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.ACTIVE;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.COMPANY_NUMBER;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.CREATED_DATE;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.ID;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.QUERY;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.UPDATED_DATE;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.USER_ID;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.ACTIVE;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.COMPANY_NUMBER;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.CREATED_DATE;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.ID;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.QUERY;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.UPDATED_DATE;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.NotificationMatchTestUtils.USER_ID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

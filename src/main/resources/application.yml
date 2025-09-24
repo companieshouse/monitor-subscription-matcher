@@ -12,6 +12,9 @@ spring:
         max-attempts: ${MAX_ATTEMPTS:5}
         backoff-delay: ${BACKOFF_DELAY:1000}
         concurrency: ${CONCURRENT_LISTENER_INSTANCES:1}
+    producer:
+      notify:
+        topic: ${NOTIFICATION_MATCH_TOPIC:notification-match}
 
   data:
     mongodb:
@@ -20,7 +23,9 @@ spring:
 
 management:
   endpoints:
-    web.exposure.include: health
+    web:
+      exposure:
+        include: health, beans
   endpoint:
     health.show-details: always
   health:

@@ -1,9 +1,8 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.consumer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 
-import java.io.IOException;
 import monitor.transaction;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -14,19 +13,21 @@ import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.companieshouse.monitorsubscription.matcher.util.DisabledIfDockerUnavailable;
 
 @ExtendWith(OutputCaptureExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
+@DisabledIfDockerUnavailable
 class MessageLoggingAspectTest {
 
     @Autowired
     private MonitorFilingConsumer consumer;
 
     @Test
-    void testAspectLogging(CapturedOutput output) throws IOException {
-        Message<transaction> message = buildUpdateMessage();
+    void testAspectLogging(CapturedOutput output) {
+        Message<transaction> message = buildTransactionUpdateMessage();
 
         consumer.consume(message);
 

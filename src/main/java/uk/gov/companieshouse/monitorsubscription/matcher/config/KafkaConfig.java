@@ -21,27 +21,27 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.monitorsubscription.matcher.config.properties.KafkaConsumerFilingProperties;
+import uk.gov.companieshouse.monitorsubscription.matcher.config.properties.MonitorFilingConsumerProperties;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.RetryableTopicErrorInterceptor;
+import uk.gov.companieshouse.monitorsubscription.matcher.serdes.GenericSerializer;
 import uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingDeserializer;
-import uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingSerializer;
 
 @Configuration
 @EnableKafka
 @Profile("!test")
 public class KafkaConfig {
 
-    private final KafkaConsumerFilingProperties properties;
+    private final MonitorFilingConsumerProperties monitorFilingProperties;
     private final String bootstrapServers;
     private final Logger logger;
 
     /**
      * Constructor.
      */
-    public KafkaConfig(KafkaConsumerFilingProperties newProperties,
+    public KafkaConfig(MonitorFilingConsumerProperties monitorFilingProperties,
             @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers,
             Logger logger) {
-        this.properties = newProperties;
+        this.monitorFilingProperties = monitorFilingProperties;
         this.bootstrapServers = bootstrapServers;
         this.logger = logger;
     }
@@ -49,9 +49,9 @@ public class KafkaConfig {
     /**
      * Kafka MonitorFilingConsumer Factory.
      */
-    @Bean("kafkaConsumerFactory")
+    @Bean(name = "kafkaConsumerFactory")
     public ConsumerFactory<String, transaction> kafkaConsumerFactory() {
-        logger.trace("createKafkaConsumerFactory() method called.");
+        logger.trace("kafkaConsumerFactory() method called.");
 
         Map<String, Object> props = new HashMap<>();
 
@@ -69,37 +69,39 @@ public class KafkaConfig {
     }
 
     /**
-     * Kafka Producer Factory.
+     * Kafka MonitorFiling Producer Factory.
      */
-    @Bean("kafkaProducerFactory")
+    @Bean(name = "kafkaProducerFactory")
     public ProducerFactory<String, Object> kafkaProducerFactory() {
-        logger.trace("createKafkaProducerFactory() method called.");
+        logger.trace("kafkaProducerFactory() method called.");
 
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "false");
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MonitorFilingSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GenericSerializer.class);
         props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, RetryableTopicErrorInterceptor.class.getName());
 
-        return new DefaultKafkaProducerFactory<>(props, new StringSerializer(), new MonitorFilingSerializer());
+        return new DefaultKafkaProducerFactory<>(props, new StringSerializer(), new GenericSerializer());
     }
 
-    @Bean("kafkaTemplate")
+    @Bean
     public KafkaTemplate<String, Object> kafkaTemplate() {
+        logger.trace("kafkaTemplate() method called.");
+
         return new KafkaTemplate<>(kafkaProducerFactory());
     }
 
     /**
      * Kafka Listener Container Factory.
      */
-    @Bean("kafkaListenerContainerFactory")
+    @Bean(name = "kafkaListenerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, transaction> kafkaListenerContainerFactory() {
         logger.trace("kafkaListenerContainerFactory() method called.");
 
         ConcurrentKafkaListenerContainerFactory<String, transaction> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(kafkaConsumerFactory());
-        factory.setConcurrency(properties.getConcurrency());
+        factory.setConcurrency(monitorFilingProperties.getConcurrency());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
 
         return factory;

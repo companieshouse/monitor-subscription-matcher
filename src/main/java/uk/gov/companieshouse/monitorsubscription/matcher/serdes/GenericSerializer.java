@@ -5,6 +5,7 @@ import static uk.gov.companieshouse.monitorsubscription.matcher.config.Applicati
 
 import consumer.exception.NonRetryableErrorException;
 import java.nio.charset.StandardCharsets;
+import monitor.filing;
 import monitor.transaction;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
@@ -15,7 +16,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
 
-public class MonitorFilingSerializer implements Serializer<Object> {
+public class GenericSerializer implements Serializer<Object> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
@@ -30,10 +31,18 @@ public class MonitorFilingSerializer implements Serializer<Object> {
 
             if (payload instanceof transaction monitorFiling) {
                 DatumWriter<transaction> writer = new SpecificDatumWriter<>();
-                EncoderFactory encoderFactory = EncoderFactory.get();
+                var encoderFactory = EncoderFactory.get();
 
                 AvroSerializer<transaction> avroSerializer = new AvroSerializer<>(writer, encoderFactory);
                 return avroSerializer.toBinary(monitorFiling);
+            }
+
+            if (payload instanceof filing notificationMatch) {
+                DatumWriter<filing> writer = new SpecificDatumWriter<>();
+                var encoderFactory = EncoderFactory.get();
+
+                AvroSerializer<filing> avroSerializer = new AvroSerializer<>(writer, encoderFactory);
+                return avroSerializer.toBinary(notificationMatch);
             }
 
             return payload.toString().getBytes(StandardCharsets.UTF_8);

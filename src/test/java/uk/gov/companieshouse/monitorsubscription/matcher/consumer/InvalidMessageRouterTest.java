@@ -3,7 +3,7 @@ package uk.gov.companieshouse.monitorsubscription.matcher.consumer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static uk.gov.companieshouse.monitorsubscription.matcher.util.TestUtils.buildUpdateMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public class InvalidMessageRouterTest {
         configs.put("invalid.message.topic", "invalid-test-topic");
         underTest.configure(configs);
 
-        Message<transaction> transactionMessage = buildUpdateMessage();
+        Message<transaction> transactionMessage = buildTransactionUpdateMessage();
         ProducerRecord<String, transaction> onSendRecord = new ProducerRecord<>("test-topic", "test-key", transactionMessage.getPayload());
 
         ProducerRecord<String, transaction> result = underTest.onSend(onSendRecord);
@@ -58,7 +58,7 @@ public class InvalidMessageRouterTest {
         configs.put("invalid.message.topic", "invalid-test-topic");
         underTest.configure(configs);
 
-        Message<transaction> transactionMessage = buildUpdateMessage();
+        Message<transaction> transactionMessage = buildTransactionUpdateMessage();
         ProducerRecord<String, transaction> onSendRecord = new ProducerRecord<>("test-topic", "test-key", transactionMessage.getPayload());
 
         ProducerRecord<String, transaction> result = underTest.onSend(onSendRecord);
