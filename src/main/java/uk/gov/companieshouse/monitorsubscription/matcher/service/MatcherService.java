@@ -25,12 +25,15 @@ public class MatcherService {
     private final MonitorRepository repository;
     private final ObjectMapper mapper;
     private final NotificationMatchProducer producer;
+    private final TransactionToFilingConverter converter;
     private final Logger logger;
 
-    public MatcherService(MonitorRepository repository, ObjectMapper mapper, NotificationMatchProducer producer, Logger logger) {
+    public MatcherService(MonitorRepository repository, ObjectMapper mapper, NotificationMatchProducer producer,
+            TransactionToFilingConverter converter, Logger logger) {
         this.repository = repository;
         this.mapper = mapper;
         this.producer = producer;
+        this.converter = converter;
         this.logger = logger;
     }
 
@@ -51,7 +54,6 @@ public class MatcherService {
         logger.debug("Found %d matching companies".formatted(companies.size()));
 
         // Process each query document and prepare messages for the producer.
-        TransactionToFilingConverter converter = new TransactionToFilingConverter();
         companies.stream().map(MonitorQueryDocument::getUserId).forEach(userId -> {
             filing payload = converter.apply(message, userId);
 

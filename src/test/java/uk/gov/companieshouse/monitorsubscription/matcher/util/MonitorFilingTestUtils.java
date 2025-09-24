@@ -145,10 +145,16 @@ public class MonitorFilingTestUtils {
     }
 
     public static Message<transaction> buildTransactionEmptyDataMessage() {
-        String dataString = "";
-
         return MessageBuilder
-                .withPayload(buildTransactionWithData(dataString))
+                .withPayload(buildTransactionWithData(""))
+                .setHeader("kafka_receivedTopic", "test-topic")
+                .setHeader("kafka_offset", 42L)  // optional
+                .build();
+    }
+
+    public static Message<transaction> buildTransactionNullDataMessage() {
+        return MessageBuilder
+                .withPayload(buildTransactionWithData(null))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();

@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.COMPANY_NUMBER;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.TRANSACTION_ID;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionDeleteMessageWithoutTransactionID;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionEmptyDataMessage;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionInvalidMessage;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 
@@ -29,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.Message;
 import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.monitorsubscription.matcher.converter.TransactionToFilingConverter;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
 import uk.gov.companieshouse.monitorsubscription.matcher.producer.NotificationMatchProducer;
 import uk.gov.companieshouse.monitorsubscription.matcher.repository.MonitorRepository;
@@ -46,11 +48,15 @@ class MatcherServiceTest {
     @Mock
     Logger logger;
 
+    TransactionToFilingConverter converter;
+
     MatcherService underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new MatcherService(repository, new ObjectMapper(), producer, logger);
+        converter = new TransactionToFilingConverter();
+
+        underTest = new MatcherService(repository, new ObjectMapper(), producer, converter, logger);
     }
 
     @Test
@@ -121,6 +127,24 @@ class MatcherServiceTest {
 
         assertThat(expectedException.getMessage(), is("Error extracting transaction ID from message"));
     }
+
+    @Test
+    void givenEmptyPayload_whenFetchingTransactionID_thenRaiseException() {
+        Message<transaction> message = buildTransactionEmptyDataMessage();
+
+        List<MonitorQueryDocument> documents = createQueryDocuments();
+        when(repository.findByCompanyNumber(COMPANY_NUMBER)).thenReturn(documents);
+
+        underTest.processMessage(message.getPayload());
+
+        verify(logger, times(1)).trace("processMessage(message=%s) method called.".formatted(message.getPayload()));
+        verify(logger, times(1)).debug("Delete non-existent filing for company: [%s] received - attempting to match users".
+                formatted(COMPANY_NUMBER));
+        verify(repository, times(1)).findByCompanyNumber(COMPANY_NUMBER);
+
+        verify(producer, times(documents.size())).sendMessage(any(filing.class));
+    }
+
 
     private List<MonitorQueryDocument> createQueryDocuments() {
         MonitorQueryDocument doc1 = new MonitorQueryDocument();
