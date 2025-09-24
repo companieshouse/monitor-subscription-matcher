@@ -11,7 +11,6 @@ import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFili
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.NotificationMatchTestUtils.KIND;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.NotificationMatchTestUtils.USER_ID;
 
-import java.io.IOException;
 import monitor.filing;
 import monitor.transaction;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,17 +20,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.Message;
 
 @ExtendWith(MockitoExtension.class)
-public class TransactionToFilingConverterTest {
+class TransactionToFilingConverterTest {
 
     TransactionToFilingConverter underTest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
        underTest = new TransactionToFilingConverter();
     }
 
     @Test
-    public void givenValidUpdatePayload_whenConverted_thenFilingCreated() throws IOException {
+    void givenValidUpdatePayload_whenConverted_thenFilingCreated() {
         Message<transaction> message = buildTransactionUpdateMessage();
 
         filing result = underTest.apply(message.getPayload(), USER_ID);
@@ -45,7 +44,7 @@ public class TransactionToFilingConverterTest {
     }
 
     @Test
-    public void givenValidDeletePayload_whenConverted_thenFilingCreated() throws IOException {
+    void givenValidDeletePayload_whenConverted_thenFilingCreated() {
         Message<transaction> message = buildTransactionDeleteMessage();
 
         filing result = underTest.apply(message.getPayload(), USER_ID);
@@ -59,7 +58,7 @@ public class TransactionToFilingConverterTest {
     }
 
     @Test
-    public void givenEmptyPayload_whenConverted_thenFilingCreated() throws IOException {
+    void givenEmptyPayload_whenConverted_thenFilingCreated() {
         Message<transaction> message = buildTransactionEmptyDataMessage();
 
         filing result = underTest.apply(message.getPayload(), USER_ID);

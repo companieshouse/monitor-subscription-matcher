@@ -31,7 +31,7 @@ public class GenericSerializer implements Serializer<Object> {
 
             if (payload instanceof transaction monitorFiling) {
                 DatumWriter<transaction> writer = new SpecificDatumWriter<>();
-                EncoderFactory encoderFactory = EncoderFactory.get();
+                var encoderFactory = EncoderFactory.get();
 
                 AvroSerializer<transaction> avroSerializer = new AvroSerializer<>(writer, encoderFactory);
                 return avroSerializer.toBinary(monitorFiling);
@@ -39,7 +39,7 @@ public class GenericSerializer implements Serializer<Object> {
 
             if (payload instanceof filing notificationMatch) {
                 DatumWriter<filing> writer = new SpecificDatumWriter<>();
-                EncoderFactory encoderFactory = EncoderFactory.get();
+                var encoderFactory = EncoderFactory.get();
 
                 AvroSerializer<filing> avroSerializer = new AvroSerializer<>(writer, encoderFactory);
                 return avroSerializer.toBinary(notificationMatch);

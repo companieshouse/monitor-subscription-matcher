@@ -17,7 +17,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.monitorsubscription.matcher.config.properties.NotificationMatchProducerProperties;
 
 @ExtendWith(MockitoExtension.class)
-public class NotificationMatchProducerTest {
+class NotificationMatchProducerTest {
 
     @Mock
     NotificationMatchProducerProperties properties;
@@ -31,12 +31,12 @@ public class NotificationMatchProducerTest {
     NotificationMatchProducer underTest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         underTest = new NotificationMatchProducer(properties, template, logger);
     }
 
     @Test
-    public void givenValidUpdateMessage_whenSendMessage_thenNoErrorsAreRaised() {
+    void givenValidUpdateMessage_whenSendMessage_thenNoErrorsAreRaised() {
         filing message = buildFilingUpdateMessage().getPayload();
         when(properties.getTopic()).thenReturn("test-topic");
 
@@ -48,7 +48,7 @@ public class NotificationMatchProducerTest {
     }
 
     @Test
-    public void givenValidDeleteMessage_whenSendMessage_thenNoErrorsAreRaised() {
+    void givenValidDeleteMessage_whenSendMessage_thenNoErrorsAreRaised() {
         filing message = buildFilingDeleteMessage().getPayload();
         when(properties.getTopic()).thenReturn("test-topic");
 

@@ -35,7 +35,7 @@ import uk.gov.companieshouse.monitorsubscription.matcher.repository.MonitorRepos
 import uk.gov.companieshouse.monitorsubscription.matcher.repository.model.MonitorQueryDocument;
 
 @ExtendWith(MockitoExtension.class)
-public class MatcherServiceTest {
+class MatcherServiceTest {
 
     @Mock
     MonitorRepository repository;
@@ -49,12 +49,12 @@ public class MatcherServiceTest {
     MatcherService underTest;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         underTest = new MatcherService(repository, new ObjectMapper(), producer, logger);
     }
 
     @Test
-    public void givenNoMatches_whenProcessed_thenNoMessagesProduced() {
+    void givenNoMatches_whenProcessed_thenNoMessagesProduced() {
         Message<transaction> message = buildTransactionUpdateMessage();
 
         when(repository.findByCompanyNumber(COMPANY_NUMBER)).thenReturn(Collections.emptyList());
@@ -70,7 +70,7 @@ public class MatcherServiceTest {
     }
 
     @Test
-    public void givenMultipleMatches_whenProcessed_thenMultipleMessagesProduced() {
+    void givenMultipleMatches_whenProcessed_thenMultipleMessagesProduced() {
         Message<transaction> message = buildTransactionUpdateMessage();
 
         List<MonitorQueryDocument> documents = createQueryDocuments();
@@ -87,7 +87,7 @@ public class MatcherServiceTest {
     }
 
     @Test
-    public void givenMultipleMatchesWithoutTransactionID_whenProcessed_thenMultipleMessagesProduced() {
+    void givenMultipleMatchesWithoutTransactionID_whenProcessed_thenMultipleMessagesProduced() {
         Message<transaction> message = buildTransactionDeleteMessageWithoutTransactionID();
 
         List<MonitorQueryDocument> documents = createQueryDocuments();
@@ -104,7 +104,7 @@ public class MatcherServiceTest {
     }
 
     @Test
-    public void givenInvalidPayload_whenFetchingTransactionID_thenRaiseException() {
+    void givenInvalidPayload_whenFetchingTransactionID_thenRaiseException() {
         Message<transaction> message = buildTransactionInvalidMessage();
 
         NonRetryableException expectedException = assertThrows(NonRetryableException.class, () -> {
