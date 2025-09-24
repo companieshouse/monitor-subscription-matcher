@@ -52,7 +52,7 @@
     </sonar.coverage.jacoco.xmlReportPaths>
     <sonar.jacoco.reports>${project.build.directory}/site</sonar.jacoco.reports>
     <sonar.projectName>${project.artifactId}</sonar.projectName>
-    <sonar.projectKey>uk.gov.companieshouse:${project.artifactId}</sonar.projectKey>
+    <sonar.projectKey>uk.gov.companieshouse:monitor-subscription-matcher</sonar.projectKey>
     <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
   </properties>
 
