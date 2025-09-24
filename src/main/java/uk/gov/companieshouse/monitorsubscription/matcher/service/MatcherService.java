@@ -64,6 +64,11 @@ public class MatcherService {
         try {
             JsonNode root = mapper.readTree(message.getData());
             JsonNode data = root.get("data");
+
+            if (data == null) {
+                return Optional.empty();
+            }
+
             JsonNode transactionNode = data.get("transaction_id");
 
             return Optional.ofNullable(transactionNode).map(JsonNode::asText);
