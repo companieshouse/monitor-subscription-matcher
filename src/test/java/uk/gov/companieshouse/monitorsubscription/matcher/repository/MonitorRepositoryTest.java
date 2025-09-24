@@ -22,7 +22,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import uk.gov.companieshouse.monitorsubscription.matcher.repository.model.MonitorQueryDocument;
 
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @DataMongoTest
 public class MonitorRepositoryTest {
 

@@ -38,11 +38,11 @@ company.
     ```
     
 ### Outgoing Messages (Produced)
-  - *Outgoing messages are produced to a Kafka Topic named*: `notification-match`
-    - Headers:
-        - `correlation_id`: (Taken and inserted from the consumed message)
-        - `reply_to`: Kafka topic name to send response to
-    - Body:
+- *Outgoing messages are produced to a Kafka Topic named*: `notification-match`
+  - Headers:
+    - `correlation_id`: (Taken and inserted from the consumed message)
+    - `reply_to`: Kafka topic name to send response to
+  - Body:
     ```json
     {
         "data": {
@@ -67,9 +67,7 @@ company.
             "is_delete": false
         },
         "kind": "email",
-        "notified_at": "1453896192000",
+        "notified_at": "2025-03-03T15:04:03",
         "user_id": "1vKD26OwehmZI6MpGz9D02-dmCI"
     }
     ```
-    
-
