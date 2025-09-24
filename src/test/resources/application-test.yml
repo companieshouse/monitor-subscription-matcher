@@ -12,7 +12,7 @@ spring:
         topic: test-topic
         group-id: test-group-id
         max-attempts: 5
-        backoff-delay: 1000
+        backoff-delay: 500
         concurrency: 1
     producer:
       value-serializer: uk.gov.companieshouse.monitorsubscription.matcher.serdes.GenericSerializer
