@@ -3,6 +3,7 @@ package uk.gov.companieshouse.monitorsubscription.matcher.util;
 import static uk.gov.companieshouse.monitorsubscription.matcher.converter.TransactionToFilingConverter.EMAIL_KIND;
 
 import monitor.filing;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
@@ -73,6 +74,7 @@ public class NotificationMatchTestUtils {
         return MessageBuilder
                 .withPayload(buildFilingWithData(NOTIFICATION_MATCH_UPDATE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
+                .setHeader("kafka_correlationId", "test-correlation-id") // optional
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
 
@@ -82,6 +84,7 @@ public class NotificationMatchTestUtils {
         return MessageBuilder
                 .withPayload(buildFilingWithData(NOTIFICATION_MATCH_DELETE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
+                .setHeader("kafka_correlationId", "test-correlation-id") // optional
                 .setHeader("kafka_offset", 42L)  // optional
                 .build();
 

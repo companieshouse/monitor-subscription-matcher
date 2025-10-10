@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import monitor.filing;
 import monitor.transaction;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.monitorsubscription.matcher.converter.TransactionToFilingConverter;
@@ -55,9 +56,9 @@ public class MatcherService {
 
         // Process each query document and prepare messages for the producer.
         companies.stream().map(MonitorQueryDocument::getUserId).forEach(userId -> {
-            filing payload = converter.apply(message, userId);
+            Message<filing> messageToSend = converter.apply(message, userId);
 
-            producer.sendMessage(payload);
+            producer.sendMessage(messageToSend);
         });
     }
 

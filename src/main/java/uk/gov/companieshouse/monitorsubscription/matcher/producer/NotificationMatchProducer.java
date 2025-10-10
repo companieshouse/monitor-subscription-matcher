@@ -2,6 +2,7 @@ package uk.gov.companieshouse.monitorsubscription.matcher.producer;
 
 import monitor.filing;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.monitorsubscription.matcher.config.properties.NotificationMatchProducerProperties;
@@ -21,7 +22,7 @@ public class NotificationMatchProducer {
         this.logger = logger;
     }
 
-    public void sendMessage(final filing message) {
+    public void sendMessage(final Message<filing> message) {
         logger.trace("sendMessage(message=%s) method called.".formatted(message));
 
         // Send the converted message to the Kafka topic
