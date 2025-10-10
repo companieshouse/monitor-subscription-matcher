@@ -1,8 +1,11 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.converter;
 
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import monitor.filing;
 import monitor.transaction;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -24,8 +27,15 @@ public class TransactionToFilingConverter implements BiFunction<transaction, Str
                 .build();
 
         return MessageBuilder.withPayload(payload)
-                .setHeader(KafkaHeaders.CORRELATION_ID, DataMapHolder.getRequestId())
+                .setHeader(KafkaHeaders.CORRELATION_ID, getCorrelationId())
                 .build();
     }
 
+    private String getCorrelationId() {
+        Optional<String> correlationId = Optional.ofNullable(DataMapHolder.getRequestId());
+        if(correlationId.isEmpty() || StringUtils.equals(correlationId.get(), "uninitialised")) {
+            return UUID.randomUUID().toString();
+        }
+        return correlationId.get();
+    }
 }
