@@ -45,7 +45,7 @@ class NotificationMatchProducerTest {
         underTest.sendMessage(message);
 
         verify(logger, times(1)).trace("sendMessage(message=%s) method called.".formatted(message));
-        verify(template, times(1)).send("test-topic", message);
+        verify(template, times(1)).send("test-topic", message.getPayload());
     }
 
     @Test
@@ -56,6 +56,6 @@ class NotificationMatchProducerTest {
         underTest.sendMessage(message);
 
         verify(logger, times(1)).trace("sendMessage(message=%s) method called.".formatted(message));
-        verify(template, times(1)).send("test-topic", message);
+        verify(template, times(1)).send("test-topic", message.getPayload());
     }
 }
