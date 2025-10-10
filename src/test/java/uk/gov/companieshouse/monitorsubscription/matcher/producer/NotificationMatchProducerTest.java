@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.Message;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.monitorsubscription.matcher.config.properties.NotificationMatchProducerProperties;
 
@@ -37,25 +38,24 @@ class NotificationMatchProducerTest {
 
     @Test
     void givenValidUpdateMessage_whenSendMessage_thenNoErrorsAreRaised() {
-        filing message = buildFilingUpdateMessage().getPayload();
+        Message<filing> message = buildFilingUpdateMessage();
+
         when(properties.getTopic()).thenReturn("test-topic");
 
         underTest.sendMessage(message);
 
         verify(logger, times(1)).trace("sendMessage(message=%s) method called.".formatted(message));
-
-        verify(template, times(1)).send("test-topic", message);
+        verify(template, times(1)).send("test-topic", message.getPayload());
     }
 
     @Test
     void givenValidDeleteMessage_whenSendMessage_thenNoErrorsAreRaised() {
-        filing message = buildFilingDeleteMessage().getPayload();
+        Message<filing> message = buildFilingDeleteMessage();
         when(properties.getTopic()).thenReturn("test-topic");
 
         underTest.sendMessage(message);
 
         verify(logger, times(1)).trace("sendMessage(message=%s) method called.".formatted(message));
-
-        verify(template, times(1)).send("test-topic", message);
+        verify(template, times(1)).send("test-topic", message.getPayload());
     }
 }

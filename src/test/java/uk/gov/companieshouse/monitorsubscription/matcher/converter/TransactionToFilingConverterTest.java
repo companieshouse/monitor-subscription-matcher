@@ -36,42 +36,45 @@ class TransactionToFilingConverterTest {
     void givenValidUpdatePayload_whenConverted_thenFilingCreated() {
         Message<transaction> message = buildTransactionUpdateMessage();
 
-        filing result = underTest.apply(message.getPayload(), USER_ID);
-
+        Message<filing> result = underTest.apply(message.getPayload(), USER_ID);
         assertThat(result, is(notNullValue()));
 
-        assertThat(result.getData(), is(notNullValue()));
-        assertThat(result.getKind(), is(KIND));
-        assertThat(result.getNotifiedAt(), is(PUBLISHED_AT));
-        assertThat(result.getUserId(), is(USER_ID));
+        filing payload = result.getPayload();
+        assertThat(payload, is(notNullValue()));
+        assertThat(payload.getData(), is(notNullValue()));
+        assertThat(payload.getKind(), is(KIND));
+        assertThat(payload.getNotifiedAt(), is(PUBLISHED_AT));
+        assertThat(payload.getUserId(), is(USER_ID));
     }
 
     @Test
     void givenValidDeletePayload_whenConverted_thenFilingCreated() {
         Message<transaction> message = buildTransactionDeleteMessage();
 
-        filing result = underTest.apply(message.getPayload(), USER_ID);
-
+        Message<filing> result = underTest.apply(message.getPayload(), USER_ID);
         assertThat(result, is(notNullValue()));
 
-        assertThat(result.getData(), is(notNullValue()));
-        assertThat(result.getKind(), is(KIND));
-        assertThat(result.getNotifiedAt(), is(PUBLISHED_AT));
-        assertThat(result.getUserId(), is(USER_ID));
+        filing payload = result.getPayload();
+        assertThat(payload, is(notNullValue()));
+        assertThat(payload.getData(), is(notNullValue()));
+        assertThat(payload.getKind(), is(KIND));
+        assertThat(payload.getNotifiedAt(), is(PUBLISHED_AT));
+        assertThat(payload.getUserId(), is(USER_ID));
     }
 
     @Test
     void givenEmptyPayload_whenConverted_thenFilingCreated() {
         Message<transaction> message = buildTransactionEmptyDataMessage();
 
-        filing result = underTest.apply(message.getPayload(), USER_ID);
-
+        Message<filing> result = underTest.apply(message.getPayload(), USER_ID);
         assertThat(result, is(notNullValue()));
 
-        assertThat(result.getData(), is(emptyOrNullString()));
-        assertThat(result.getKind(), is(KIND));
-        assertThat(result.getNotifiedAt(), is(PUBLISHED_AT));
-        assertThat(result.getUserId(), is(USER_ID));
+        filing payload = result.getPayload();
+        assertThat(payload, is(notNullValue()));
+        assertThat(payload.getData(), is(emptyOrNullString()));
+        assertThat(payload.getKind(), is(KIND));
+        assertThat(payload.getNotifiedAt(), is(PUBLISHED_AT));
+        assertThat(payload.getUserId(), is(USER_ID));
     }
 
     @Test

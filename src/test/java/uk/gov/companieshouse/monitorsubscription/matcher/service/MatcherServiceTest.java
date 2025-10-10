@@ -21,7 +21,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
-import monitor.filing;
 import monitor.transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,6 +75,7 @@ class MatcherServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void givenMultipleMatches_whenProcessed_thenMultipleMessagesProduced() {
         Message<transaction> message = buildTransactionUpdateMessage();
 
@@ -89,10 +89,11 @@ class MatcherServiceTest {
                 formatted(COMPANY_NUMBER, TRANSACTION_ID));
         verify(repository, times(1)).findByCompanyNumber(COMPANY_NUMBER);
 
-        verify(producer, times(documents.size())).sendMessage(any(filing.class));
+        verify(producer, times(documents.size())).sendMessage(any(Message.class));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void givenMultipleMatchesWithoutTransactionID_whenProcessed_thenMultipleMessagesProduced() {
         Message<transaction> message = buildTransactionDeleteMessageWithoutTransactionID();
 
@@ -106,7 +107,7 @@ class MatcherServiceTest {
                 formatted(COMPANY_NUMBER));
         verify(repository, times(1)).findByCompanyNumber(COMPANY_NUMBER);
 
-        verify(producer, times(documents.size())).sendMessage(any(filing.class));
+        verify(producer, times(documents.size())).sendMessage(any(Message.class));
     }
 
     @Test
@@ -129,6 +130,7 @@ class MatcherServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void givenEmptyPayload_whenFetchingTransactionID_thenRaiseException() {
         Message<transaction> message = buildTransactionEmptyDataMessage();
 
@@ -142,7 +144,7 @@ class MatcherServiceTest {
                 formatted(COMPANY_NUMBER));
         verify(repository, times(1)).findByCompanyNumber(COMPANY_NUMBER);
 
-        verify(producer, times(documents.size())).sendMessage(any(filing.class));
+        verify(producer, times(documents.size())).sendMessage(any(Message.class));
     }
 
 
