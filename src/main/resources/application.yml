@@ -45,3 +45,8 @@ management:
 
 server:
   port: ${PORT:8181}
+
+logging:
+  level:
+    org.springframework.kafka: DEBUG
+    org.apache.kafka.clients: DEBUG
