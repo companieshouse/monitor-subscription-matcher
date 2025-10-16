@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import monitor.transaction;
@@ -18,15 +19,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.messaging.Message;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import uk.gov.companieshouse.monitorsubscription.matcher.consumer.MonitorFilingConsumer;
 
 @SpringBootTest
-@EmbeddedKafka(partitions = 1,
-        topics = { "test-topic" },
+@EmbeddedKafka(
+        partitions = 1,
         brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092" }
 )
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("test")
 public class KafkaIntegrationTest {
 
@@ -36,8 +41,17 @@ public class KafkaIntegrationTest {
     @Autowired
     private MonitorFilingConsumer consumer;
 
+    private static String topicName;
+
     private final CountDownLatch latch = new CountDownLatch(1);
     private transaction receivedMessage;
+
+    @DynamicPropertySource
+    static void overrideProperties(final DynamicPropertyRegistry registry) {
+        topicName = "test-topic-" + UUID.randomUUID();
+
+        registry.add("spring.kafka.consumer.filing.topic", () -> topicName);
+    }
 
     @BeforeEach
     void setup() {
@@ -51,7 +65,7 @@ public class KafkaIntegrationTest {
     void testMessageIsConsumed() throws IOException, InterruptedException {
         Message<transaction> message = buildTransactionUpdateMessage();
 
-        kafkaTemplate.send("test-topic", message.getPayload());
+        kafkaTemplate.send(topicName, message.getPayload());
 
         boolean messageConsumed = latch.await(10, TimeUnit.SECONDS);
 
