@@ -28,7 +28,7 @@ management:
     web:
       exposure:
         include: health, beans
-      base-path: /
+      base-path: /monitor-subscription-matcher
       path-mapping:
         health: healthcheck
   endpoint:
