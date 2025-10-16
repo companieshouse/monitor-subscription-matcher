@@ -23,13 +23,23 @@ spring:
 
 management:
   endpoints:
+    access:
+      default: read_only
     web:
       exposure:
         include: health, beans
+      base-path: /monitor-subscription-matcher
+      path-mapping:
+        health: healthcheck
   endpoint:
-    health.show-details: always
+    health:
+      access: read_only
+      show-details: always
   health:
-    defaults.enabled: true
+    defaults:
+      enabled: true
+    mongo:
+      enabled: false
   server:
     port: 8082
 
