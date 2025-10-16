@@ -4,7 +4,7 @@ spring:
     name: monitor-subscription-matcher
 
   kafka:
-    bootstrap-servers: ${KAFKA_BROKER_ADDR:localhost:9092}
+    bootstrap-servers: localhost:9092
     consumer:
       value-deserializer: uk.gov.companieshouse.monitorsubscription.matcher.serdes.MonitorFilingDeserializer
       auto-offset-reset: earliest
