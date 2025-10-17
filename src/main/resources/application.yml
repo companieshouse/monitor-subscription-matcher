@@ -25,7 +25,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health"
+        include: health
       base-path: /monitor-subscription-matcher
       path-mapping:
         health: healthcheck
