@@ -3,10 +3,12 @@ package uk.gov.companieshouse.monitorsubscription.matcher.repository;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.ACTIVE;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.COMPANY_NUMBER;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.CREATED_DATE;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.ID;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.INACTIVE;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.QUERY;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.UPDATED_DATE;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.NotificationMatchTestUtils.USER_ID;
@@ -50,7 +52,7 @@ public class MonitorRepositoryTest {
 
         underTest.save(document);
 
-        List<MonitorQueryDocument> results = underTest.findByCompanyNumber(document.getCompanyNumber());
+        List<MonitorQueryDocument> results = underTest.findByCompanyNumberAndIsActive(document.getCompanyNumber(), true);
 
         assertThat(results, is(notNullValue()));
         assertThat(results.size(), is(1));
@@ -62,5 +64,22 @@ public class MonitorRepositoryTest {
         assertThat(UPDATED_DATE, is(results.getFirst().getUpdatedAt()));
         assertThat(QUERY, is(results.getFirst().getQuery()));
         assertThat(USER_ID, is(results.getFirst().getUserId()));
+    }
+
+        @Test
+    void givenQueryDocument_whenDocumentSavedAndIsInActive_thenDocumentIgnoredSuccessfully() {
+        MonitorQueryDocument document = new MonitorQueryDocument();
+        document.setId(ID);
+        document.setCompanyNumber(COMPANY_NUMBER);
+        document.setCreatedAt(CREATED_DATE);
+        document.setActive(INACTIVE);
+        document.setUpdatedAt(UPDATED_DATE);
+        document.setQuery(QUERY);
+        document.setUserId(USER_ID);    
+
+        underTest.save(document);
+
+        List<MonitorQueryDocument> results = underTest.findByCompanyNumberAndIsActive(document.getCompanyNumber(), true);
+        assertThat(results.size(), is(0));
     }
 }

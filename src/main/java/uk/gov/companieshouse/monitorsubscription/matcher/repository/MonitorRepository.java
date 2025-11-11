@@ -6,6 +6,6 @@ import uk.gov.companieshouse.monitorsubscription.matcher.repository.model.Monito
 
 public interface MonitorRepository extends MongoRepository<MonitorQueryDocument, String> {
 
-    List<MonitorQueryDocument> findByCompanyNumber(String companyNumber);
+    List<MonitorQueryDocument> findByCompanyNumberAndIsActive(String companyNumber, Boolean isActive);
 
 }

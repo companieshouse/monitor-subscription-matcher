@@ -51,15 +51,17 @@ public class MatcherService {
         }
 
         // Query the repository for matching companies.
-        List<MonitorQueryDocument> companies = repository.findByCompanyNumber(message.getCompanyNumber());
+        List<MonitorQueryDocument> companies = repository.findByCompanyNumberAndIsActive(message.getCompanyNumber(), true);
         logger.debug("Found %d matching companies".formatted(companies.size()));
 
-        // Process each query document and prepare messages for the producer.
-        companies.stream().map(MonitorQueryDocument::getUserId).forEach(userId -> {
-            Message<filing> messageToSend = converter.apply(message, userId);
+        // Process each query document and prepare messages for the producer - only if companies list not empty.
+        if (!companies.isEmpty()) {
+            companies.stream().map(MonitorQueryDocument::getUserId).forEach(userId -> {
+                Message<filing> messageToSend = converter.apply(message, userId);
 
-            producer.sendMessage(messageToSend);
-        });
+                producer.sendMessage(messageToSend);
+            });
+        }
     }
 
     private Optional<String> getTransactionId(final transaction message) {
