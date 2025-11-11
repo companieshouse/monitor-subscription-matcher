@@ -17,6 +17,7 @@ public class MonitorFilingTestUtils {
     public static final String COMPANY_NUMBER = "00006400";
     public static final LocalDateTime CREATED_DATE = LocalDateTime.parse("2023-10-10T10:00:00");
     public static final Boolean ACTIVE = Boolean.TRUE;
+    public static final Boolean INACTIVE = Boolean.FALSE;
     public static final LocalDateTime UPDATED_DATE = CREATED_DATE.plusDays(1);
     public static final String QUERY = "QUERY transaction WHERE company_number=\"%s\"".formatted(COMPANY_NUMBER);
     public static final String PUBLISHED_AT = "2025-03-03T15:04:03";

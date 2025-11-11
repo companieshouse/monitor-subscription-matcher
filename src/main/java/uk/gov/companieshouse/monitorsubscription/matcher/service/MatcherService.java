@@ -51,10 +51,10 @@ public class MatcherService {
         }
 
         // Query the repository for matching companies.
-        List<MonitorQueryDocument> companies = repository.findByCompanyNumber(message.getCompanyNumber());
+        List<MonitorQueryDocument> companies = repository.findByCompanyNumberAndIsActive(message.getCompanyNumber(), true);
         logger.debug("Found %d matching companies".formatted(companies.size()));
 
-        // Process each query document and prepare messages for the producer.
+        // Process each query document and prepare messages for the producer
         companies.stream().map(MonitorQueryDocument::getUserId).forEach(userId -> {
             Message<filing> messageToSend = converter.apply(message, userId);
 

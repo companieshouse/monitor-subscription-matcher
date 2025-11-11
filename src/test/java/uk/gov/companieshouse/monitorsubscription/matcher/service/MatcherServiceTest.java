@@ -62,14 +62,14 @@ class MatcherServiceTest {
     void givenNoMatches_whenProcessed_thenNoMessagesProduced() {
         Message<transaction> message = buildTransactionUpdateMessage();
 
-        when(repository.findByCompanyNumber(COMPANY_NUMBER)).thenReturn(Collections.emptyList());
+        when(repository.findByCompanyNumberAndIsActive(COMPANY_NUMBER, true)).thenReturn(Collections.emptyList());
 
         underTest.processMessage(message.getPayload());
 
         verify(logger, times(2)).trace(anyString());
         verify(logger, times(1)).debug("Received transaction for company: [%s], transaction id: [%s] - attempting to match users".
                 formatted(COMPANY_NUMBER, TRANSACTION_ID));
-        verify(repository, times(1)).findByCompanyNumber(COMPANY_NUMBER);
+        verify(repository, times(1)).findByCompanyNumberAndIsActive(COMPANY_NUMBER, true);
 
         verifyNoInteractions(producer);
     }
@@ -80,14 +80,14 @@ class MatcherServiceTest {
         Message<transaction> message = buildTransactionUpdateMessage();
 
         List<MonitorQueryDocument> documents = createQueryDocuments();
-        when(repository.findByCompanyNumber(COMPANY_NUMBER)).thenReturn(documents);
+        when(repository.findByCompanyNumberAndIsActive(COMPANY_NUMBER, true)).thenReturn(documents);
 
         underTest.processMessage(message.getPayload());
 
         verify(logger, times(2)).trace(anyString());
         verify(logger, times(1)).debug("Received transaction for company: [%s], transaction id: [%s] - attempting to match users".
                 formatted(COMPANY_NUMBER, TRANSACTION_ID));
-        verify(repository, times(1)).findByCompanyNumber(COMPANY_NUMBER);
+        verify(repository, times(1)).findByCompanyNumberAndIsActive(COMPANY_NUMBER, true);
 
         verify(producer, times(documents.size())).sendMessage(any(Message.class));
     }
@@ -98,14 +98,14 @@ class MatcherServiceTest {
         Message<transaction> message = buildTransactionDeleteMessageWithoutTransactionID();
 
         List<MonitorQueryDocument> documents = createQueryDocuments();
-        when(repository.findByCompanyNumber(COMPANY_NUMBER)).thenReturn(documents);
+        when(repository.findByCompanyNumberAndIsActive(COMPANY_NUMBER, true)).thenReturn(documents);
 
         underTest.processMessage(message.getPayload());
 
         verify(logger, times(1)).trace("processMessage(message=%s) method called.".formatted(message.getPayload()));
         verify(logger, times(1)).debug("Delete non-existent filing for company: [%s] received - attempting to match users".
                 formatted(COMPANY_NUMBER));
-        verify(repository, times(1)).findByCompanyNumber(COMPANY_NUMBER);
+        verify(repository, times(1)).findByCompanyNumberAndIsActive(COMPANY_NUMBER, true);
 
         verify(producer, times(documents.size())).sendMessage(any(Message.class));
     }
@@ -135,18 +135,34 @@ class MatcherServiceTest {
         Message<transaction> message = buildTransactionEmptyDataMessage();
 
         List<MonitorQueryDocument> documents = createQueryDocuments();
-        when(repository.findByCompanyNumber(COMPANY_NUMBER)).thenReturn(documents);
+        when(repository.findByCompanyNumberAndIsActive(COMPANY_NUMBER, true)).thenReturn(documents);
 
         underTest.processMessage(message.getPayload());
 
         verify(logger, times(1)).trace("processMessage(message=%s) method called.".formatted(message.getPayload()));
         verify(logger, times(1)).debug("Delete non-existent filing for company: [%s] received - attempting to match users".
                 formatted(COMPANY_NUMBER));
-        verify(repository, times(1)).findByCompanyNumber(COMPANY_NUMBER);
+        verify(repository, times(1)).findByCompanyNumberAndIsActive(COMPANY_NUMBER, true);
 
         verify(producer, times(documents.size())).sendMessage(any(Message.class));
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void givenProcessMessageCalled_whenNoActiveDocumentsFoundInMongoCollection_thenProducerNotCalled() {
+        Message<transaction> message = buildTransactionDeleteMessageWithoutTransactionID();
+
+        when(repository.findByCompanyNumberAndIsActive(COMPANY_NUMBER, true)).thenReturn(List.of());
+
+        underTest.processMessage(message.getPayload());
+
+        verify(logger, times(1)).trace("processMessage(message=%s) method called.".formatted(message.getPayload()));
+        verify(logger, times(1)).debug("Delete non-existent filing for company: [%s] received - attempting to match users".
+                formatted(COMPANY_NUMBER));
+        verify(repository, times(1)).findByCompanyNumberAndIsActive(COMPANY_NUMBER, true);
+
+        verify(producer, times(0)).sendMessage(any(Message.class));
+    }
 
     private List<MonitorQueryDocument> createQueryDocuments() {
         MonitorQueryDocument doc1 = new MonitorQueryDocument();
