@@ -117,6 +117,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "")  // optional, will be overridden by converter if ""
                 .build();
     }
 
@@ -125,6 +126,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA_WITHOUT_TRANSACTION_ID))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
@@ -133,6 +135,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA_WITH_IGNORED_FIELDS))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
@@ -143,6 +146,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(dataString))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
@@ -151,6 +155,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(""))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
