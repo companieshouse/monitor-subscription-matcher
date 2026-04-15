@@ -108,6 +108,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(MONITOR_FILING_UPDATE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "uninitialised")  // optional, will be overridden by converter if "uninitialised"
                 .build();
     }
 
