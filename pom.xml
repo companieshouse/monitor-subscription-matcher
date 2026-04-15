@@ -39,7 +39,7 @@
     <!-- transitive dependencies with vulnerabilities in previous versions -->
     <commons-lang3.version>3.20.0</commons-lang3.version>
     <msgpack-core.version>0.9.11</msgpack-core.version>
-    <tomcat-embed-core.version>11.0.21</tomcat-embed-core.version>
+    <tomcat-embed.version>11.0.21</tomcat-embed.version>
 
     <!-- companies house -->
     <sdk-manager-java.version>3.0.11</sdk-manager-java.version>
@@ -72,7 +72,7 @@
       </dependency>
 
       <!-- Transitive dependencies with vulnerabilities in previous versions -->
-      <!-- To Be reviewed regularly to ensure they are up to date and secure -->
+      <!-- To be reviewed regularly to ensure they are up to date and secure -->
 
       <!-- CVE-2025-48924 -->
       <dependency>
@@ -94,7 +94,19 @@
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-core</artifactId>
-        <version>${tomcat-embed-core.version}</version>
+        <version>${tomcat-embed.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-el</artifactId>
+        <version>${tomcat-embed.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-websocket</artifactId>
+        <version>${tomcat-embed.version}</version>
         <scope>compile</scope>
       </dependency>
 
