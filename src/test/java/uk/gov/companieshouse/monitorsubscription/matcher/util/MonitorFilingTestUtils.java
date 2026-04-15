@@ -108,10 +108,20 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(MONITOR_FILING_UPDATE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "uninitialised")  // optional, will be overridden by converter if "uninitialised"
                 .build();
     }
 
     public static Message<transaction> buildTransactionDeleteMessage() {
+        return MessageBuilder
+                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA))
+                .setHeader("kafka_receivedTopic", "test-topic")
+                .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "")  // optional, will be overridden by converter if ""
+                .build();
+    }
+
+    public static Message<transaction> buildTransactionDeleteMessageWithMissingCorrelationID() {
         return MessageBuilder
                 .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA))
                 .setHeader("kafka_receivedTopic", "test-topic")
@@ -124,6 +134,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA_WITHOUT_TRANSACTION_ID))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
@@ -132,6 +143,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA_WITH_IGNORED_FIELDS))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
@@ -142,6 +154,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(dataString))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
@@ -150,6 +163,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(""))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
@@ -158,6 +172,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(null))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
@@ -169,6 +184,7 @@ public class MonitorFilingTestUtils {
                 .setHeader(EXCEPTION_CAUSE_FQCN, new RecordHeader("exception-cause-key", NonRetryableErrorException.class.getName().getBytes()))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 

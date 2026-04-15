@@ -7,12 +7,14 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.PUBLISHED_AT;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionDeleteMessage;
+import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionDeleteMessageWithMissingCorrelationID;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionEmptyDataMessage;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionNullDataMessage;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.buildTransactionUpdateMessage;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.NotificationMatchTestUtils.KIND;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.NotificationMatchTestUtils.USER_ID;
 
+import java.util.UUID;
 import monitor.filing;
 import monitor.transaction;
 import org.apache.avro.AvroRuntimeException;
@@ -21,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.Message;
+import uk.gov.companieshouse.monitorsubscription.matcher.logging.DataMapHolder;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionToFilingConverterTest {
@@ -49,6 +52,8 @@ class TransactionToFilingConverterTest {
 
     @Test
     void givenValidDeletePayload_whenConverted_thenFilingCreated() {
+        DataMapHolder.initialise(UUID.randomUUID().toString());
+
         Message<transaction> message = buildTransactionDeleteMessage();
 
         Message<filing> result = underTest.apply(message.getPayload(), USER_ID);
@@ -63,7 +68,27 @@ class TransactionToFilingConverterTest {
     }
 
     @Test
+    void givenValidDeletePayloadWithMissingCorrelationID_whenConverted_thenFilingCreated() {
+        DataMapHolder.initialise(null);
+
+        Message<transaction> message = buildTransactionDeleteMessageWithMissingCorrelationID();
+
+        Message<filing> result = underTest.apply(message.getPayload(), USER_ID);
+        assertThat(result, is(notNullValue()));
+
+        filing payload = result.getPayload();
+        assertThat(payload, is(notNullValue()));
+        assertThat(payload.getData(), is(notNullValue()));
+        assertThat(payload.getKind(), is(KIND));
+        assertThat(payload.getNotifiedAt(), is(PUBLISHED_AT));
+        assertThat(payload.getUserId(), is(USER_ID));
+    }
+
+
+    @Test
     void givenEmptyPayload_whenConverted_thenFilingCreated() {
+        DataMapHolder.initialise("uninitialised");
+
         Message<transaction> message = buildTransactionEmptyDataMessage();
 
         Message<filing> result = underTest.apply(message.getPayload(), USER_ID);
