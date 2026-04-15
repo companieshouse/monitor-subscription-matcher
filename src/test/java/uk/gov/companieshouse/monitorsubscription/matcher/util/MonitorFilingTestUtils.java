@@ -121,6 +121,14 @@ public class MonitorFilingTestUtils {
                 .build();
     }
 
+    public static Message<transaction> buildTransactionDeleteMessageWithMissingCorrelationID() {
+        return MessageBuilder
+                .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA))
+                .setHeader("kafka_receivedTopic", "test-topic")
+                .setHeader("kafka_offset", 42L)  // optional
+                .build();
+    }
+
     public static Message<transaction> buildTransactionDeleteMessageWithoutTransactionID() {
         return MessageBuilder
                 .withPayload(buildTransactionWithData(MONITOR_FILING_DELETE_DATA_WITHOUT_TRANSACTION_ID))
@@ -164,6 +172,7 @@ public class MonitorFilingTestUtils {
                 .withPayload(buildTransactionWithData(null))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
@@ -175,6 +184,7 @@ public class MonitorFilingTestUtils {
                 .setHeader(EXCEPTION_CAUSE_FQCN, new RecordHeader("exception-cause-key", NonRetryableErrorException.class.getName().getBytes()))
                 .setHeader("kafka_receivedTopic", "test-topic")
                 .setHeader("kafka_offset", 42L)  // optional
+                .setHeader("kafka_correlationId", "OU812")  // optional
                 .build();
     }
 
