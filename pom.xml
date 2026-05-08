@@ -22,9 +22,7 @@
 
     <spring-boot-dependencies.version>3.5.14</spring-boot-dependencies.version>
 
-    <maven-surefire.version>3.5.2</maven-surefire.version>
-    <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
-    <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
+<!--    <maven-surefire.version>3.5.2</maven-surefire.version>-->
     <jib-maven-plugin.version>3.5.1</jib-maven-plugin.version>
 
     <software.amazon.awssdk.version>2.31.78</software.amazon.awssdk.version>
@@ -398,7 +396,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <argLine>-Dfile.encoding=UTF-8</argLine>
           <argLine>${surefireArgLine}</argLine>
@@ -408,7 +405,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${maven-failsafe-plugin.version}</version>
         <executions>
           <execution>
             <phase>integration-test</phase>
