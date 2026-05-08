@@ -22,7 +22,6 @@
 
     <spring-boot-dependencies.version>3.5.14</spring-boot-dependencies.version>
 
-<!--    <maven-surefire.version>3.5.2</maven-surefire.version>-->
     <jib-maven-plugin.version>3.5.1</jib-maven-plugin.version>
 
     <software.amazon.awssdk.version>2.31.78</software.amazon.awssdk.version>
