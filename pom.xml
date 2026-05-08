@@ -15,14 +15,13 @@
   <packaging>jar</packaging>
 
   <properties>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+    <java.version>21</java.version>
 
-    <spring.boot.version>3.5.13</spring.boot.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
 
-    <maven-surefire.version>3.5.2</maven-surefire.version>
-    <maven-surefire-plugin.version>${maven-surefire.version}</maven-surefire-plugin.version>
-    <maven-failsafe-plugin.version>${maven-surefire.version}</maven-failsafe-plugin.version>
+    <spring-boot-dependencies.version>3.5.14</spring-boot-dependencies.version>
+
     <jib-maven-plugin.version>3.5.1</jib-maven-plugin.version>
 
     <software.amazon.awssdk.version>2.31.78</software.amazon.awssdk.version>
@@ -31,7 +30,7 @@
     <commons-text.version>1.15.0</commons-text.version>
     <wiremock.version>3.11.0</wiremock.version>
     <system-rules.version>1.19.0</system-rules.version>
-    <http-client.version>5.6</http-client.version>
+    <http-client.version>5.6.1</http-client.version>
 
     <skip.unit.tests>false</skip.unit.tests>
     <skip.integration.tests>false</skip.integration.tests>
@@ -59,6 +58,7 @@
     <sonar.projectName>monitor-subscription-matcher</sonar.projectName>
     <sonar.projectKey>uk.gov.companieshouse:monitor-subscription-matcher</sonar.projectKey>
     <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
+
   </properties>
 
   <dependencyManagement>
@@ -66,7 +66,7 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring.boot.version}</version>
+        <version>${spring-boot-dependencies.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -320,7 +320,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring.boot.version}</version>
+        <version>${spring-boot-dependencies.version}</version>
         <executions>
           <execution>
             <goals>
@@ -395,7 +395,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <argLine>-Dfile.encoding=UTF-8</argLine>
           <argLine>${surefireArgLine}</argLine>
@@ -405,7 +404,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${maven-failsafe-plugin.version}</version>
         <executions>
           <execution>
             <phase>integration-test</phase>
