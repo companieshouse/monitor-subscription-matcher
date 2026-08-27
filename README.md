@@ -101,3 +101,7 @@ Application specific attributes | Value                                         
 ### Useful Links
 - [ECS service config dev repository](https://github.com/companieshouse/ecs-service-configs-dev)
 - [ECS service config production repository](https://github.com/companieshouse/ecs-service-configs-production)
+
+## Slack notifications
+
+This Fission service sends pipeline notifications to the `team-fission-pipelines` Slack channel.
