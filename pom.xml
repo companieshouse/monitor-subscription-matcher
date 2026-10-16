@@ -43,8 +43,7 @@
 
     <!-- companies house -->
     <ch.dependency.bom.version>0.1.32</ch.dependency.bom.version>
-    <private-api-sdk-java.version>4.0.385</private-api-sdk-java.version>
-    <ch-kafka.version>3.0.3</ch-kafka.version>
+    <private-api-sdk-java.version>7.2.39</private-api-sdk-java.version>
 
     <!-- explicit versions of transitive dependencies with vulnerabilities in previous versions -->
     <jayway-jsonpath.version>2.9.0</jayway-jsonpath.version>
@@ -202,7 +201,6 @@
     <dependency>
       <groupId>uk.gov.companieshouse</groupId>
       <artifactId>ch-kafka</artifactId>
-      <version>${ch-kafka.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-lang</groupId>
