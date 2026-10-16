@@ -19,10 +19,9 @@ spring:
       notify:
         topic: producer-topic
 
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017
-      database: monitor
+  mongodb:
+    uri: mongodb://localhost:27017
+    database: monitor
 
 server:
   port: 9191

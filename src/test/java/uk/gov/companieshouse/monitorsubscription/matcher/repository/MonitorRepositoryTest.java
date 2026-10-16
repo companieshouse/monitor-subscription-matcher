@@ -1,9 +1,20 @@
 package uk.gov.companieshouse.monitorsubscription.matcher.repository;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.mongodb.test.autoconfigure.DataMongoTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.mongodb.MongoDBContainer;
+
+import uk.gov.companieshouse.monitorsubscription.matcher.repository.model.MonitorQueryDocument;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.ACTIVE;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.COMPANY_NUMBER;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.CREATED_DATE;
@@ -12,17 +23,6 @@ import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFili
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.QUERY;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.MonitorFilingTestUtils.UPDATED_DATE;
 import static uk.gov.companieshouse.monitorsubscription.matcher.util.NotificationMatchTestUtils.USER_ID;
-
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import uk.gov.companieshouse.monitorsubscription.matcher.repository.model.MonitorQueryDocument;
 
 @Testcontainers(disabledWithoutDocker = true)
 @DataMongoTest
@@ -33,7 +33,7 @@ public class MonitorRepositoryTest {
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+        registry.add("spring.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
     }
 
     @Autowired
