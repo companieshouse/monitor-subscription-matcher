@@ -2,6 +2,7 @@ package uk.gov.companieshouse.monitorsubscription.matcher.consumer;
 
 import java.util.function.Consumer;
 import monitor.transaction;
+import org.springframework.kafka.annotation.BackOff;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.DltStrategy;
@@ -48,6 +49,7 @@ public class MonitorFilingConsumer {
     )
     @RetryableTopic(
             attempts = "${spring.kafka.consumer.filing.max-attempts}",
+            backOff = @BackOff(delayString = "${spring.kafka.consumer.filing.backoff-delay}"),
             autoCreateTopics = "false",
             dltTopicSuffix = "-error",
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
