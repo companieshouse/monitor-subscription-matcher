@@ -16,10 +16,9 @@ spring:
       notify:
         topic: ${NOTIFICATION_MATCH_TOPIC:notification-match}
 
-  data:
-    mongodb:
-      uri: ${MONGODB_URL:mongodb://mongo:27017}
-      database: ${MONGO_DATABASE:monitor}
+  mongodb:
+    uri: ${MONGODB_URL:mongodb://mongo:27017}
+    database: ${MONGO_DATABASE:monitor}
 
 management:
   endpoints:

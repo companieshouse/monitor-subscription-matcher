@@ -2,12 +2,12 @@ package uk.gov.companieshouse.monitorsubscription.matcher.consumer;
 
 import java.util.function.Consumer;
 import monitor.transaction;
+import org.springframework.kafka.annotation.BackOff;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.kafka.retrytopic.SameIntervalTopicReuseStrategy;
 import org.springframework.messaging.Message;
-import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.monitorsubscription.matcher.exception.NonRetryableException;
@@ -49,8 +49,8 @@ public class MonitorFilingConsumer {
     )
     @RetryableTopic(
             attempts = "${spring.kafka.consumer.filing.max-attempts}",
+            backOff = @BackOff(delayString = "${spring.kafka.consumer.filing.backoff-delay}"),
             autoCreateTopics = "false",
-            backoff = @Backoff(delayExpression = "${spring.kafka.consumer.filing.backoff-delay}"),
             dltTopicSuffix = "-error",
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
